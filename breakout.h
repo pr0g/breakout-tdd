@@ -2,6 +2,12 @@
 
 #include <utility>
 
+struct display_t {
+  virtual void output(int x, int y) = 0;
+protected:
+  ~display_t() = default;
+};
+
 class breakout_t {
   int x_;
   int y_;
@@ -17,11 +23,10 @@ public:
     height_ = height;
   }
 
-  std::pair<int, int> board_offset() const {
-    return {x_, y_};
-  }
+  std::pair<int, int> board_offset() const { return {x_, y_}; }
+  std::pair<int, int> board_size() const { return {width_, height_}; }
 
-  std::pair<int, int> board_size() const {
-    return {width_, height_};
+  void display(display_t& display) {
+
   }
 };
