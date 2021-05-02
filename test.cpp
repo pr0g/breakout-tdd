@@ -56,4 +56,11 @@ TEST_CASE("breakout game") {
     CHECK(y_min == 5);
     CHECK(y_max == 85);
   }
+
+  SUBCASE("paddle begins centered (board space)") {
+    auto [board_width, board_height] = breakout.board_size();
+    auto [paddle_x, paddle_y] = breakout.paddle_position();
+    CHECK(paddle_x == board_width / 2);
+    CHECK(paddle_y == board_height - 1);
+  }
 }
