@@ -42,4 +42,15 @@ public:
       display.output(board_x + board_width, y);
     }
   }
+
+  void display_paddle(display_t& display) {
+    const auto [board_x, board_y] = board_offset_;
+    const auto [paddle_x, paddle_y] = paddle_position();
+    const auto [paddle_width, paddle_height] = paddle_size();
+
+    int left = paddle_x - paddle_width / 2;
+    for (int i = 0; i < paddle_width; ++i) {
+      display.output(board_x + left + i, board_y + paddle_y);
+    }
+  }
 };
