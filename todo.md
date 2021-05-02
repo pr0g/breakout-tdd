@@ -2,9 +2,9 @@
 
 - ~~board dimensions/size~~
 - block count (horizontal/vertical)
-- paddle position (initial)
+- ~~paddle position (initial)~~
 - paddle movement (input)
-- game border (outline)
+- ~~game border (outline)~~
 - border margin/padding
 - ball movement
 - ball wall collision
