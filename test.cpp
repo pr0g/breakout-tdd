@@ -5,4 +5,6 @@
 
 TEST_CASE("breakout game") {
   breakout_t breakout;
+
+  SUBCASE("initial score is zero") { CHECK(breakout.score() == 0); }
 }
