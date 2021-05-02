@@ -14,7 +14,7 @@ class breakout_t {
   int y_;
   int width_;
   int height_;
-
+  std::pair<int, int> paddle_position_;
 public:
   int score() { return 0; }
   void setup(int x, int y, int width, int height) {
@@ -22,10 +22,12 @@ public:
     y_ = y;
     width_ = width;
     height_ = height;
+    paddle_position_ = {width_ / 2, height_ - 1};
   }
 
   std::pair<int, int> board_offset() const { return {x_, y_}; }
   std::pair<int, int> board_size() const { return {width_, height_}; }
+  std::pair<int, int> paddle_position() const { return paddle_position_; }
 
   void display(display_t& display) {
     for (int x = x_; x <= x_ + width_; x++) {
