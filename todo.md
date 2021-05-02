@@ -1,6 +1,6 @@
 # todo
 
-- board dimensions/size
+- ~~board dimensions/size~~
 - block count (horizontal/vertical)
 - paddle position (initial)
 - paddle movement (input)
