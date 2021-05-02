@@ -6,6 +6,11 @@
 #include <numeric>
 #include <vector>
 
+struct display_test_t : public display_t {
+  std::vector<std::pair<int, int>> positions_;
+  void output(int x, int y) override { positions_.push_back({x, y}); }
+};
+
 TEST_CASE("breakout game") {
   breakout_t breakout;
 
@@ -27,11 +32,6 @@ TEST_CASE("breakout game") {
   }
 
   SUBCASE("board outline displayed") {
-    struct display_test_t : public display_t {
-      std::vector<std::pair<int, int>> positions_;
-      void output(int x, int y) override { positions_.push_back({x, y}); }
-    };
-
     display_test_t display_test;
     breakout.display_board(display_test);
 
@@ -75,5 +75,21 @@ TEST_CASE("breakout game") {
     CHECK(left == 45);
     CHECK(right == 54);
     CHECK(paddle_height == 1);
+  }
+
+  SUBCASE("board outline displayed") {
+    display_test_t display_test;
+    breakout.display_paddle(display_test);
+
+    auto [paddle_x, paddle_y] = breakout.paddle_position();
+    auto [paddle_width, paddle_height] = breakout.paddle_size();
+
+    int left = paddle_x - paddle_width / 2;
+    int right = paddle_x + (paddle_width / 2 - 1);
+    int offset = 0;
+    for (const auto& position : display_test.positions_) {
+      CHECK(position.first == left + offset++);
+      CHECK(position.second == breakout.board_size().second - 1);
+    }
   }
 }
