@@ -30,14 +30,10 @@ public:
   void display(display_t& display) {
     for (int x = x_; x < x_ + width_; x++) {
       display.output(x, y_);
-    }
-    for (int x = x_; x < x_ + width_; x++) {
       display.output(x, y_ + height_);
     }
     for (int y = y_ + 1; y < y_ + height_ - 1; y++) {
       display.output(x_, y);
-    }
-    for (int y = y_ + 1; y < y_ + height_ - 1; y++) {
       display.output(x_ + width_, y);
     }
   }
