@@ -40,6 +40,10 @@ public:
     paddle_position_.first -= distance;
   }
 
+  void move_paddle_right(const int distance) {
+    paddle_position_.first += distance;
+  }
+
   void display_board(display_t& display) {
     const auto [board_width, board_height] = board_size_;
     const auto [board_x, board_y] = board_offset_;
