@@ -38,7 +38,7 @@ TEST_CASE("breakout game") {
     breakout.display(display_test);
 
     // 100x2 + 78x2 = 556
-    CHECK(display_test.positions_.size() == 356);
+    CHECK(display_test.positions_.size() == 360);
 
     int x_max = 0;
     int x_min = INT_MAX;

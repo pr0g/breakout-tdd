@@ -28,11 +28,11 @@ public:
   std::pair<int, int> board_size() const { return {width_, height_}; }
 
   void display(display_t& display) {
-    for (int x = x_; x < x_ + width_; x++) {
+    for (int x = x_; x <= x_ + width_; x++) {
       display.output(x, y_);
       display.output(x, y_ + height_);
     }
-    for (int y = y_ + 1; y < y_ + height_ - 1; y++) {
+    for (int y = y_ + 1; y <= y_ + height_ - 1; y++) {
       display.output(x_, y);
       display.output(x_ + width_, y);
     }
