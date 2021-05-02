@@ -89,4 +89,12 @@ TEST_CASE("breakout game") {
       CHECK(position.second == board_y + breakout.board_size().second - 1);
     }
   }
+
+  SUBCASE("paddle can be moved left") {
+    const int distance = 2;
+    auto [start_paddle_x, _1] = breakout.paddle_position();
+    breakout.move_paddle_left(distance);
+    auto [paddle_x, _2] = breakout.paddle_position();
+    CHECK(paddle_x == start_paddle_x - distance);
+  }
 }
