@@ -29,6 +29,13 @@ public:
   std::pair<int, int> paddle_position() const { return paddle_position_; }
   std::pair<int, int> paddle_size() const { return paddle_size_; }
 
+  int paddle_left_edge() const {
+    return paddle_position().first - paddle_size().first / 2;
+  }
+  int paddle_right_edge() const {
+    return paddle_position().first + (paddle_size().first / 2 - 1);
+  }
+
   void display_board(display_t& display) {
     const auto [board_width, board_height] = board_size_;
     const auto [board_x, board_y] = board_offset_;
@@ -48,9 +55,8 @@ public:
     const auto [paddle_x, paddle_y] = paddle_position();
     const auto [paddle_width, paddle_height] = paddle_size();
 
-    int left = paddle_x - paddle_width / 2;
     for (int i = 0; i < paddle_width; ++i) {
-      display.output(board_x + left + i, board_y + paddle_y);
+      display.output(board_x + paddle_left_edge() + i, board_y + paddle_y);
     }
   }
 };

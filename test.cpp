@@ -70,10 +70,8 @@ TEST_CASE("breakout game") {
     auto [paddle_x, paddle_y] = breakout.paddle_position();
     auto [paddle_width, paddle_height] = breakout.paddle_size();
 
-    int left = paddle_x - paddle_width / 2;
-    int right = paddle_x + (paddle_width / 2 - 1);
-    CHECK(left == 45);
-    CHECK(right == 54);
+    CHECK(breakout.paddle_left_edge() == 45);
+    CHECK(breakout.paddle_right_edge() == 54);
     CHECK(paddle_height == 1);
   }
 
@@ -85,11 +83,9 @@ TEST_CASE("breakout game") {
     auto [paddle_x, paddle_y] = breakout.paddle_position();
     auto [paddle_width, paddle_height] = breakout.paddle_size();
 
-    int left = paddle_x - paddle_width / 2;
-    int right = paddle_x + (paddle_width / 2 - 1);
     int offset = 0;
     for (const auto& position : display_test.positions_) {
-      CHECK(position.first == board_x + left + offset++);
+      CHECK(position.first == board_x + breakout.paddle_left_edge() + offset++);
       CHECK(position.second == board_y + breakout.board_size().second - 1);
     }
   }
