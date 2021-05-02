@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
   breakout.setup(10, 5, 100, 30);
 
   display_console_t display_console;
-  breakout.display(display_console);
+  breakout.display_board(display_console);
 
   [[maybe_unused]] int key = getch();
 

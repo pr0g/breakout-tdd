@@ -35,7 +35,7 @@ TEST_CASE("breakout game") {
     };
 
     display_test_t display_test;
-    breakout.display(display_test);
+    breakout.display_board(display_test);
 
     // 100x2 + 78x2 = 556
     CHECK(display_test.positions_.size() == 360);

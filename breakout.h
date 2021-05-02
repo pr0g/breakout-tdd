@@ -10,33 +10,33 @@ protected:
 };
 
 class breakout_t {
-  int x_;
-  int y_;
-  int width_;
-  int height_;
+  std::pair<int, int> board_size_;
+  std::pair<int, int> board_offset_;
   std::pair<int, int> paddle_position_;
+
 public:
   int score() { return 0; }
   void setup(int x, int y, int width, int height) {
-    x_ = x;
-    y_ = y;
-    width_ = width;
-    height_ = height;
-    paddle_position_ = {width_ / 2, height_ - 1};
+    board_size_ = {width, height};
+    board_offset_ = {x, y};
+    paddle_position_ = {width / 2, height - 1};
   }
 
-  std::pair<int, int> board_offset() const { return {x_, y_}; }
-  std::pair<int, int> board_size() const { return {width_, height_}; }
+  std::pair<int, int> board_offset() const { return board_offset_; }
+  std::pair<int, int> board_size() const { return board_size_; }
   std::pair<int, int> paddle_position() const { return paddle_position_; }
 
-  void display(display_t& display) {
-    for (int x = x_; x <= x_ + width_; x++) {
-      display.output(x, y_);
-      display.output(x, y_ + height_);
+  void display_board(display_t& display) {
+    const auto [board_width, board_height] = board_size_;
+    const auto [board_x, board_y] = board_offset_;
+
+    for (int x = board_x; x <= board_x + board_width; x++) {
+      display.output(x, board_y);
+      display.output(x, board_y + board_height);
     }
-    for (int y = y_ + 1; y <= y_ + height_ - 1; y++) {
-      display.output(x_, y);
-      display.output(x_ + width_, y);
+    for (int y = board_y + 1; y <= board_y + board_height - 1; y++) {
+      display.output(board_x, y);
+      display.output(board_x + board_width, y);
     }
   }
 };
