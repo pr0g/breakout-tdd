@@ -13,6 +13,7 @@ class breakout_t {
   std::pair<int, int> board_size_;
   std::pair<int, int> board_offset_;
   std::pair<int, int> paddle_position_;
+  std::pair<int, int> paddle_size_;
 
 public:
   int score() { return 0; }
@@ -20,11 +21,13 @@ public:
     board_size_ = {width, height};
     board_offset_ = {x, y};
     paddle_position_ = {width / 2, height - 1};
+    paddle_size_ = {10, 1}; // default size
   }
 
   std::pair<int, int> board_offset() const { return board_offset_; }
   std::pair<int, int> board_size() const { return board_size_; }
   std::pair<int, int> paddle_position() const { return paddle_position_; }
+  std::pair<int, int> paddle_size() const { return paddle_size_; }
 
   void display_board(display_t& display) {
     const auto [board_width, board_height] = board_size_;
