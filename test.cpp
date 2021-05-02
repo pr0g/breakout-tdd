@@ -2,5 +2,5 @@
 #include <doctest/doctest.h>
 
 TEST_CASE("breakout game") {
-  CHECK(true);
+  breakout_t breakout;
 }
