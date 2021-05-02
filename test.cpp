@@ -20,6 +20,6 @@ TEST_CASE("breakout game") {
 
     const auto [width, height] = breakout.board_size();
     CHECK(width == 100);
-    CHECK(width == 80);
+    CHECK(height == 80);
   }
 }
