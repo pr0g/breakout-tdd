@@ -53,6 +53,7 @@ public:
     if (paddle_left_edge() > 1) {
       paddle_position_.first -= move;
     }
+    ball_position_.first = paddle_position_.first;
   }
 
   void move_paddle_right(const int distance) {
@@ -60,6 +61,7 @@ public:
     if (paddle_right_edge() < board_size_.first) {
       paddle_position_.first += move;
     }
+    ball_position_.first = paddle_position_.first;
   }
 
   void display_board(display_t& display) {
