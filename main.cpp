@@ -1,5 +1,7 @@
+#include <chrono>
 #include <iostream>
 #include <ncurses.h>
+#include <thread>
 
 #include "breakout.h"
 
@@ -15,6 +17,7 @@ int main(int argc, char** argv) {
   curs_set(0); // hide cursor
   cbreak(); // line buffering disabled (respects Ctrl-C to quit)
   keypad(stdscr, true); // enable function keys
+  nodelay(stdscr, TRUE); // do not block
   noecho(); // don't echo while we do getch
 
   breakout_t breakout;
@@ -22,13 +25,6 @@ int main(int argc, char** argv) {
 
   display_console_t display_console;
   for (bool running = true; running;) {
-    clear();
-    breakout.display_board(display_console);
-    breakout.display_paddle(display_console);
-    breakout.display_blocks(display_console);
-    breakout.display_ball(display_console);
-
-    refresh();
     switch (int key = getch(); key) {
       case KEY_LEFT:
         breakout.move_paddle_left(1);
@@ -39,9 +35,23 @@ int main(int argc, char** argv) {
       case ' ': // space
         breakout.launch();
         break;
+      case ERR:
+        // do nothing
+        break;
       default:
         break;
     }
+
+    breakout.step();
+
+    clear();
+    breakout.display_board(display_console);
+    breakout.display_paddle(display_console);
+    breakout.display_blocks(display_console);
+    breakout.display_ball(display_console);
+
+    using std::chrono_literals::operator""ms;
+    std::this_thread::sleep_for(100ms);
   }
 
   endwin();
