@@ -10,26 +10,9 @@ protected:
 };
 
 class breakout_t {
-  std::pair<int, int> board_size_;
-  std::pair<int, int> board_offset_;
-  std::pair<int, int> paddle_position_;
-  std::pair<int, int> paddle_size_;
-  std::pair<int, int> ball_position_;
-  std::pair<int, int> ball_velocity_;
-  bool launched_ = false;
-
-  void try_move_ball() {
-    if (!launched_) {
-      ball_position_.first = paddle_position_.first;
-    }
-  }
-
-  void launch(std::pair<int, int> velocity) {
-    launched_ = true;
-    ball_velocity_ = velocity;
-  }
-
 public:
+  enum class game_state_e { lost_life };
+
   [[nodiscard]] int score() const { return 0; }
   void setup(int x, int y, int width, int height) {
     board_size_ = {width, height};
@@ -38,6 +21,8 @@ public:
     paddle_size_ = {10, 1}; // default size
     ball_position_ = {paddle_position_.first, paddle_position_.second - 1};
     ball_velocity_ = {0, 0};
+    state_ = game_state_e::lost_life;
+    lives_ = 3;
   }
 
   std::pair<int, int> board_offset() const { return board_offset_; }
@@ -55,6 +40,9 @@ public:
   int horizontal_padding() const { return 2; }
   int horizontal_spacing() const { return 1; }
   int vertical_spacing() const { return 1; }
+
+  game_state_e state() const { return state_; }
+  int lives() const { return lives_; }
 
   int paddle_left_edge() const {
     return paddle_position().first - paddle_size().first / 2;
@@ -94,6 +82,9 @@ public:
       }
       if (ball_position_.second <= 1) {
         ball_velocity_.second *= -1;
+      }
+      if (ball_position_.second >= board_size_.second) {
+        lives_--;
       }
     }
   }
@@ -141,5 +132,27 @@ public:
     const auto [x, y] = ball_position_;
     const auto [board_x, board_y] = board_offset();
     display.output(board_x + x, board_y + y);
+  }
+
+private:
+  std::pair<int, int> board_size_;
+  std::pair<int, int> board_offset_;
+  std::pair<int, int> paddle_position_;
+  std::pair<int, int> paddle_size_;
+  std::pair<int, int> ball_position_;
+  std::pair<int, int> ball_velocity_;
+  int lives_;
+  game_state_e state_;
+  bool launched_ = false;
+
+  void try_move_ball() {
+    if (!launched_) {
+      ball_position_.first = paddle_position_.first;
+    }
+  }
+
+  void launch(std::pair<int, int> velocity) {
+    launched_ = true;
+    ball_velocity_ = velocity;
   }
 };
