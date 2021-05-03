@@ -250,7 +250,7 @@ TEST_CASE("breakout game") {
 
   SUBCASE("ball does not move with paddle after launch") {
     const auto [ball_x, ball_y] = breakout.ball_position();
-    breakout.launch();
+    breakout.launch_right();
     breakout.move_paddle_right(10);
     const auto [next_ball_x, next_ball_y] = breakout.ball_position();
     CHECK(ball_x == next_ball_x);
@@ -259,7 +259,7 @@ TEST_CASE("breakout game") {
 
   SUBCASE("ball moves after launch") {
     const auto [ball_x, ball_y] = breakout.ball_position();
-    breakout.launch();
+    breakout.launch_right();
 
     {
       breakout.step();
@@ -278,7 +278,7 @@ TEST_CASE("breakout game") {
 
   SUBCASE("ball bounces off of right wall") {
     breakout.move_paddle_right(100);
-    breakout.launch();
+    breakout.launch_right();
     const auto [launch_x_vel, launch_y_vel] = breakout.ball_velocity();
     CHECK(launch_x_vel == 1);
     for (int i = 0; i < 4; ++i) {
@@ -295,7 +295,7 @@ TEST_CASE("breakout game") {
     breakout.launch_left();
     const auto [launch_x_vel, launch_y_vel] = breakout.ball_velocity();
     CHECK(launch_x_vel == -1);
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 5; ++i) {
       breakout.step();
     }
     const auto [bounce_x_vel, bounce_y_vel] = breakout.ball_velocity();

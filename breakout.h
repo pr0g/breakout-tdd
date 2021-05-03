@@ -24,6 +24,11 @@ class breakout_t {
     }
   }
 
+  void launch(std::pair<int, int> velocity) {
+    launched_ = true;
+    ball_velocity_ = velocity;
+  }
+
 public:
   [[nodiscard]] int score() const { return 0; }
   void setup(int x, int y, int width, int height) {
@@ -40,7 +45,7 @@ public:
   std::pair<int, int> paddle_position() const { return paddle_position_; }
   std::pair<int, int> paddle_size() const { return paddle_size_; }
   std::pair<int, int> ball_position() const { return ball_position_; }
-  std::pair<int, int> ball_velocity() const {return ball_velocity_; }
+  std::pair<int, int> ball_velocity() const { return ball_velocity_; }
 
   int blocks_horizontal() const { return 11; }
   int blocks_vertical() const { return 9; }
@@ -51,17 +56,16 @@ public:
   int horizontal_spacing() const { return 1; }
   int vertical_spacing() const { return 1; }
 
-  void launch() {
-    launched_ = true;
-    ball_velocity_ = {1, -1};
-  }
-
   int paddle_left_edge() const {
     return paddle_position().first - paddle_size().first / 2;
   }
   int paddle_right_edge() const {
     return paddle_position().first + (paddle_size().first / 2 - 1);
   }
+
+  void launch_left() { launch({-1, -1}); }
+
+  void launch_right() { launch({1, -1}); }
 
   void move_paddle_left(const int distance) {
     int move = std::min(paddle_left_edge() - 1, distance);
@@ -83,7 +87,9 @@ public:
     if (launched_) {
       ball_position_.first += ball_velocity_.first;
       ball_position_.second += ball_velocity_.second;
-      if (ball_position_.first >= board_size_.first - 1) {
+      if (
+        ball_position_.first >= board_size_.first - 1
+        || ball_position_.first <= 1) {
         ball_velocity_.first *= -1;
       }
     }

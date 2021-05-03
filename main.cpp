@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
         breakout.move_paddle_right(1);
         break;
       case ' ': // space
-        breakout.launch();
+        breakout.launch_left();
         break;
       case ERR:
         // do nothing
