@@ -234,9 +234,9 @@ TEST_CASE("breakout game") {
     CHECK(display_test.positions_.size() == 1);
     CHECK(
       display_test.positions_.front().first
-      == breakout.board_offset().first + breakout.paddle_position().first);
+      == breakout.board_offset().first + breakout.ball_position().first);
     CHECK(
       display_test.positions_.front().second
-      == breakout.board_offset().second + breakout.paddle_position().second);
+      == breakout.board_offset().second + breakout.ball_position().second);
   }
 }

@@ -100,4 +100,10 @@ public:
       }
     }
   }
+
+  void display_ball(display_t& display) {
+    const auto [x, y] = ball_position_;
+    const auto [board_x, board_y] = board_offset();
+    display.output(board_x + x, board_y + y);
+  }
 };
