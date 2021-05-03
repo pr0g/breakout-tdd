@@ -13,7 +13,6 @@ class breakout_t {
 public:
   enum class game_state_e { preparing, launched, lost_life };
 
-  [[nodiscard]] int score() const { return 0; }
   void setup(int x, int y, int width, int height) {
     board_size_ = {width, height};
     board_offset_ = {x, y};
@@ -25,35 +24,45 @@ public:
     lives_ = 3;
   }
 
-  std::pair<int, int> board_offset() const { return board_offset_; }
-  std::pair<int, int> board_size() const { return board_size_; }
-  std::pair<int, int> paddle_position() const { return paddle_position_; }
-  std::pair<int, int> paddle_size() const { return paddle_size_; }
-  std::pair<int, int> ball_position() const { return ball_position_; }
-  std::pair<int, int> ball_velocity() const { return ball_velocity_; }
+  [[nodiscard]] std::pair<int, int> board_offset() const {
+    return board_offset_;
+  }
+  [[nodiscard]] std::pair<int, int> board_size() const { return board_size_; }
+  [[nodiscard]] std::pair<int, int> paddle_position() const {
+    return paddle_position_;
+  }
+  [[nodiscard]] std::pair<int, int> paddle_size() const { return paddle_size_; }
+  [[nodiscard]] std::pair<int, int> ball_position() const {
+    return ball_position_;
+  }
+  [[nodiscard]] std::pair<int, int> ball_velocity() const {
+    return ball_velocity_;
+  }
 
-  int blocks_horizontal() const { return 11; }
-  int blocks_vertical() const { return 9; }
-  int block_width() const { return 8; }
-  int block_height() const { return 1; }
-  int vertical_padding() const { return 1; }
-  int horizontal_padding() const { return 2; }
-  int horizontal_spacing() const { return 1; }
-  int vertical_spacing() const { return 1; }
+  [[nodiscard]] int blocks_horizontal() const { return 11; }
+  [[nodiscard]] int blocks_vertical() const { return 9; }
+  [[nodiscard]] int block_width() const { return 8; }
+  [[nodiscard]] int block_height() const { return 1; }
+  [[nodiscard]] int vertical_padding() const { return 1; }
+  [[nodiscard]] int horizontal_padding() const { return 2; }
+  [[nodiscard]] int horizontal_spacing() const { return 1; }
+  [[nodiscard]] int vertical_spacing() const { return 1; }
 
-  game_state_e state() const { return state_; }
-  bool launched() const { return state_ == game_state_e::launched; }
-  int lives() const { return lives_; }
+  [[nodiscard]] game_state_e state() const { return state_; }
+  [[nodiscard]] bool launched() const {
+    return state_ == game_state_e::launched;
+  }
+  [[nodiscard]] int lives() const { return lives_; }
+  [[nodiscard]] int score() const { return 0; }
 
-  int paddle_left_edge() const {
+  [[nodiscard]] int paddle_left_edge() const {
     return paddle_position().first - paddle_size().first / 2;
   }
-  int paddle_right_edge() const {
+  [[nodiscard]] int paddle_right_edge() const {
     return paddle_position().first + (paddle_size().first / 2 - 1);
   }
 
   void launch_left() { launch({-1, -1}); }
-
   void launch_right() { launch({1, -1}); }
 
   void move_paddle_left(const int distance) {
