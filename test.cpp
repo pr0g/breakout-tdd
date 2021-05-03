@@ -105,11 +105,12 @@ TEST_CASE("breakout game") {
   // ###############  15
   SUBCASE("paddle size (board space)") {
     auto [paddle_x, paddle_y] = breakout.paddle_position();
-    auto [paddle_width, paddle_height] = breakout.paddle_size();
+    auto paddle_width = breakout.paddle_width();
 
     CHECK(breakout.paddle_left_edge() == 45);
     CHECK(breakout.paddle_right_edge() == 54);
-    CHECK(paddle_height == 1);
+    CHECK(breakout.paddle_left_edge() == paddle_x - paddle_width / 2);
+    CHECK(breakout.paddle_right_edge() == paddle_x + paddle_width / 2 - 1);
   }
 
   SUBCASE("board outline displayed") {
@@ -118,7 +119,6 @@ TEST_CASE("breakout game") {
 
     const auto [board_x, board_y] = breakout.board_offset();
     auto [paddle_x, paddle_y] = breakout.paddle_position();
-    auto [paddle_width, paddle_height] = breakout.paddle_size();
 
     int offset = 0;
     for (const auto& position : display_test.positions_) {
@@ -346,11 +346,20 @@ TEST_CASE("breakout game") {
 
   SUBCASE("paddle detects ball intersection") {
     paddle_t paddle;
-    paddle.set_position(50, 50);
-    paddle.set_width(10);
+    paddle.position_ = {50, 50};
+    paddle.width_ = 10;
 
     ball_t ball;
-    ball.set_position(49, 50);
-    CHECK(!paddle.intersects(ball));
+    ball.position_ = {44, 50};
+    CHECK(!intersects(paddle, ball));
+
+    ball.position_ = {45, 50};
+    CHECK(intersects(paddle, ball));
+
+    ball.position_ = {54, 50};
+    CHECK(intersects(paddle, ball));
+
+    ball.position_ = {55, 50};
+    CHECK(!intersects(paddle, ball));
   }
 }
