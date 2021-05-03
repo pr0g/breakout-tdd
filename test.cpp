@@ -4,11 +4,45 @@
 #include "breakout.h"
 
 #include <numeric>
+#include <string>
 #include <vector>
+
+namespace doctest {
+  template<>
+  struct StringMaker<std::pair<int, int>> {
+    static String convert(const std::pair<int, int>& value) {
+      return String(
+        (std::to_string(value.first) + ", " + std::to_string(value.second))
+          .c_str());
+    }
+  };
+} // namespace doctest
 
 struct display_test_t : public display_t {
   std::vector<std::pair<int, int>> positions_;
   void output(int x, int y) override { positions_.push_back({x, y}); }
+};
+
+struct display_block_test_t : public display_t {
+  display_block_test_t(int block_size) : block_size_(block_size) {}
+  const int block_size_;
+  struct block_t {
+    std::pair<int, int> begin_;
+    std::pair<int, int> end_;
+  };
+  int counter = 0;
+  block_t active_block_;
+  std::vector<block_t> blocks_;
+  void output(int x, int y) override {
+    if (counter++ == 0) {
+      active_block_.begin_ = {x, y};
+    }
+    if (counter == block_size_) {
+      active_block_.end_ = {x, y};
+      blocks_.push_back(active_block_);
+      counter = 0;
+    }
+  }
 };
 
 TEST_CASE("breakout game") {
@@ -144,5 +178,33 @@ TEST_CASE("breakout game") {
                            * breakout.block_width();
 
     CHECK(display_test.positions_.size() == output_count);
+  }
+
+  SUBCASE("blocks are laid out correctly") {
+    display_block_test_t block_display_test(breakout.block_width());
+    breakout.display_blocks(block_display_test);
+
+    const auto [board_x, board_y] = breakout.board_offset();
+
+    CHECK(
+      block_display_test.blocks_.size()
+      == breakout.blocks_horizontal() * breakout.blocks_vertical());
+    CHECK(
+      block_display_test.blocks_.front().begin_
+      == std::pair{board_x + 2, board_y + 1});
+    CHECK(
+      block_display_test.blocks_.front().end_
+      == std::pair{breakout.block_width() + board_x + 1, board_y + 1});
+    CHECK(
+      block_display_test.blocks_.back().begin_
+      == std::pair{
+        board_x + 2 + (breakout.blocks_horizontal() - 1) * (breakout.block_width() + 1),
+        board_y + 1 + (breakout.blocks_vertical() - 1) * 2});
+    CHECK(
+      block_display_test.blocks_.back().end_
+      == std::pair{
+        board_x + 2 + (breakout.blocks_horizontal() - 1) * (breakout.block_width() + 1)
+          + (breakout.block_width() - 1),
+        board_y + 1 + (breakout.blocks_vertical() - 1) * 2});
   }
 }
