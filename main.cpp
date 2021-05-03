@@ -50,6 +50,11 @@ int main(int argc, char** argv) {
     breakout.display_blocks(display_console);
     breakout.display_ball(display_console);
 
+    mvprintw(
+      breakout.board_offset().second,
+      breakout.board_offset().first + breakout.board_size().first + 5,
+      "Lives: %d", breakout.lives());
+
     using std::chrono_literals::operator""ms;
     std::this_thread::sleep_for(100ms);
   }
