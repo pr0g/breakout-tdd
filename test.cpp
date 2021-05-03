@@ -256,4 +256,23 @@ TEST_CASE("breakout game") {
     CHECK(ball_x == next_ball_x);
     CHECK(ball_y == next_ball_y);
   }
+
+  SUBCASE("ball moves after launch") {
+    const auto [ball_x, ball_y] = breakout.ball_position();
+    breakout.launch();
+
+    {
+      breakout.step();
+      const auto [next_ball_x, next_ball_y] = breakout.ball_position();
+      CHECK(next_ball_x == ball_x + 1);
+      CHECK(next_ball_y == ball_y - 1);
+    }
+
+    {
+      breakout.step();
+      const auto [next_ball_x, next_ball_y] = breakout.ball_position();
+      CHECK(next_ball_x == ball_x + 2);
+      CHECK(next_ball_y == ball_y - 2);
+    }
+  }
 }
