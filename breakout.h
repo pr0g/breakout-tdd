@@ -32,6 +32,11 @@ public:
   int blocks_horizontal() const { return 11; }
   int blocks_vertical() const { return 9; }
   int block_width() const { return 8; }
+  int block_height() const { return 1; }
+  int vertical_padding() const { return 1; }
+  int horizontal_padding() const { return 2; }
+  int horizontal_spacing() const { return 1; }
+  int vertical_spacing() const { return 1; }
 
   int paddle_left_edge() const {
     return paddle_position().first - paddle_size().first / 2;
@@ -79,12 +84,15 @@ public:
   }
 
   void display_blocks(display_t& display) {
+    const auto [board_x, board_y] = board_offset();
     for (int row = 0; row < blocks_vertical(); ++row) {
       for (int col = 0; col < blocks_horizontal(); ++col) {
         for (int block_part = 0; block_part < block_width(); ++block_part) {
           display.output(
-            board_offset().first + 2 + block_part + ((block_width() + 1) * col),
-            board_offset().second + 1 + (row * 2));
+            board_x + horizontal_padding() + block_part
+              + ((block_width() + horizontal_spacing()) * col),
+            board_y + vertical_padding()
+              + ((block_height() + vertical_spacing()) * row));
         }
       }
     }

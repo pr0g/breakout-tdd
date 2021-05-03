@@ -191,20 +191,32 @@ TEST_CASE("breakout game") {
       == breakout.blocks_horizontal() * breakout.blocks_vertical());
     CHECK(
       block_display_test.blocks_.front().begin_
-      == std::pair{board_x + 2, board_y + 1});
+      == std::pair{
+        board_x + breakout.horizontal_padding(),
+        board_y + breakout.vertical_padding()});
     CHECK(
       block_display_test.blocks_.front().end_
-      == std::pair{breakout.block_width() + board_x + 1, board_y + 1});
+      == std::pair{
+        board_x + breakout.horizontal_padding() + breakout.block_width() - 1,
+        board_y + breakout.vertical_padding()});
     CHECK(
       block_display_test.blocks_.back().begin_
       == std::pair{
-        board_x + 2 + (breakout.blocks_horizontal() - 1) * (breakout.block_width() + 1),
-        board_y + 1 + (breakout.blocks_vertical() - 1) * 2});
+        board_x + breakout.horizontal_padding()
+          + (breakout.blocks_horizontal() - 1)
+              * (breakout.block_width() + breakout.horizontal_spacing()),
+        board_y + breakout.vertical_padding()
+          + (breakout.block_height() + breakout.vertical_spacing())
+              * (breakout.blocks_vertical() - 1)});
     CHECK(
       block_display_test.blocks_.back().end_
       == std::pair{
-        board_x + 2 + (breakout.blocks_horizontal() - 1) * (breakout.block_width() + 1)
+        board_x + breakout.horizontal_padding()
+          + (breakout.blocks_horizontal() - 1)
+              * (breakout.block_width() + breakout.horizontal_spacing())
           + (breakout.block_width() - 1),
-        board_y + 1 + (breakout.blocks_vertical() - 1) * 2});
+        board_y + breakout.vertical_padding()
+          + (breakout.block_height() + breakout.vertical_spacing())
+              * (breakout.blocks_vertical() - 1)});
   }
 }
