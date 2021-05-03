@@ -7,8 +7,8 @@
 - ~~border margin/padding~~
 - ~~block display~~
 - block count (horizontal/vertical)
-- ball movement
-- ball wall collision
+- ~~ball movement~~
+- ~~ball wall collision~~
 - ball paddle/block collision
 - board updating (block state (destroyed or not))
 - remaining block count
