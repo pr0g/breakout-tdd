@@ -114,4 +114,14 @@ TEST_CASE("breakout game") {
     const auto after_paddle_left_x = breakout.paddle_left_edge();
     CHECK(after_paddle_left_x == before_paddle_left_x);
   }
+
+  SUBCASE("paddle cannot be moved passed right edge") {
+    const auto start_paddle_right_x = breakout.paddle_right_edge();
+    breakout.move_paddle_right(
+      breakout.board_size().first - start_paddle_right_x - 1);
+    const auto before_paddle_right_x = breakout.paddle_right_edge();
+    breakout.move_paddle_right(1);
+    const auto after_paddle_right_x = breakout.paddle_right_edge();
+    CHECK(after_paddle_right_x == before_paddle_right_x);
+  }
 }
