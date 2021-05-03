@@ -14,6 +14,7 @@ class breakout_t {
   std::pair<int, int> board_offset_;
   std::pair<int, int> paddle_position_;
   std::pair<int, int> paddle_size_;
+  std::pair<int, int> ball_position_;
 
 public:
   int score() { return 0; }
@@ -22,12 +23,14 @@ public:
     board_offset_ = {x, y};
     paddle_position_ = {width / 2, height - 1};
     paddle_size_ = {10, 1}; // default size
+    ball_position_ = {paddle_position_.first, paddle_position_.second - 1};
   }
 
   std::pair<int, int> board_offset() const { return board_offset_; }
   std::pair<int, int> board_size() const { return board_size_; }
   std::pair<int, int> paddle_position() const { return paddle_position_; }
   std::pair<int, int> paddle_size() const { return paddle_size_; }
+  std::pair<int, int> ball_position() const { return ball_position_; }
 
   int blocks_horizontal() const { return 11; }
   int blocks_vertical() const { return 9; }
