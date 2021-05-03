@@ -29,6 +29,10 @@ public:
   std::pair<int, int> paddle_position() const { return paddle_position_; }
   std::pair<int, int> paddle_size() const { return paddle_size_; }
 
+  int blocks_horizontal() const { return 11; }
+  int blocks_vertical() const { return 9; }
+  int block_width() const { return 8; }
+
   int paddle_left_edge() const {
     return paddle_position().first - paddle_size().first / 2;
   }
@@ -71,6 +75,16 @@ public:
 
     for (int i = 0; i < paddle_width; ++i) {
       display.output(board_x + paddle_left_edge() + i, board_y + paddle_y);
+    }
+  }
+
+  void display_blocks(display_t& display) {
+    for (int row = 0; row < blocks_vertical(); ++row) {
+      for (int col = 0; col < blocks_horizontal(); ++col) {
+        for (int block_part = 0; block_part < block_width(); ++block_part) {
+          display.output(col, row);
+        }
+      }
     }
   }
 };
