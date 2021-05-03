@@ -92,6 +92,9 @@ public:
         || ball_position_.first <= 1) {
         ball_velocity_.first *= -1;
       }
+      if (ball_position_.second <= 1) {
+        ball_velocity_.second *= -1;
+      }
     }
   }
 

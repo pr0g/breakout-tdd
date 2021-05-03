@@ -51,7 +51,7 @@ TEST_CASE("breakout game") {
   int test_x = 10;
   int test_y = 5;
   int test_width = 101;
-  int test_height = 80;
+  int test_height = 30;
   breakout.setup(test_x, test_y, test_width, test_height);
 
   SUBCASE("initial score is zero") { CHECK(breakout.score() == 0); }
@@ -314,6 +314,6 @@ TEST_CASE("breakout game") {
     const auto [bounce_x_vel, bounce_y_vel] = breakout.ball_velocity();
     CHECK(bounce_x_vel == -1);
     CHECK(bounce_y_vel == 1);
-    CHECK(bounce_y_vel == launch_y_vel);
+    CHECK(bounce_x_vel == launch_x_vel);
   }
 }
