@@ -11,7 +11,7 @@ protected:
 
 class breakout_t {
 public:
-  enum class game_state_e { lost_life };
+  enum class game_state_e { preparing, launched, lost_life };
 
   [[nodiscard]] int score() const { return 0; }
   void setup(int x, int y, int width, int height) {
@@ -21,7 +21,7 @@ public:
     paddle_size_ = {10, 1}; // default size
     ball_position_ = {paddle_position_.first, paddle_position_.second - 1};
     ball_velocity_ = {0, 0};
-    state_ = game_state_e::lost_life;
+    state_ = game_state_e::preparing;
     lives_ = 3;
   }
 
@@ -42,6 +42,7 @@ public:
   int vertical_spacing() const { return 1; }
 
   game_state_e state() const { return state_; }
+  bool launched() const { return state_ == game_state_e::launched; }
   int lives() const { return lives_; }
 
   int paddle_left_edge() const {
@@ -72,7 +73,7 @@ public:
   }
 
   void step() {
-    if (launched_) {
+    if (state_ == game_state_e::launched) {
       ball_position_.first += ball_velocity_.first;
       ball_position_.second += ball_velocity_.second;
       if (
@@ -84,6 +85,7 @@ public:
         ball_velocity_.second *= -1;
       }
       if (ball_position_.second >= board_size_.second) {
+        state_ = game_state_e::lost_life;
         lives_--;
       }
     }
@@ -143,16 +145,15 @@ private:
   std::pair<int, int> ball_velocity_;
   int lives_;
   game_state_e state_;
-  bool launched_ = false;
 
   void try_move_ball() {
-    if (!launched_) {
+    if (state_ != game_state_e::launched) {
       ball_position_.first = paddle_position_.first;
     }
   }
 
   void launch(std::pair<int, int> velocity) {
-    launched_ = true;
+    state_ = game_state_e::launched;
     ball_velocity_ = velocity;
   }
 };

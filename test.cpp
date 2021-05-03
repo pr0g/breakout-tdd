@@ -342,9 +342,5 @@ TEST_CASE("breakout game") {
       }
     }
     CHECK(breakout.state() == breakout_t::game_state_e::lost_life);
-    const auto [ball_x, ball_y] = breakout.ball_position();
-    const auto [paddle_x, paddle_y] = breakout.paddle_position();
-    CHECK(ball_x == paddle_x);
-    CHECK(ball_y == paddle_y - 1);
   }
 }
