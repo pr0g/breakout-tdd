@@ -275,4 +275,18 @@ TEST_CASE("breakout game") {
       CHECK(next_ball_y == ball_y - 2);
     }
   }
+
+  SUBCASE("ball bounces off of vertical walls") {
+    breakout.move_paddle_right(100);
+    breakout.launch();
+    const auto [launch_x_vel, launch_y_vel] = breakout.ball_velocity();
+    CHECK(launch_x_vel == 1);
+    for (int i = 0; i < 3; ++i) {
+      breakout.step();
+    }
+    const auto [bounce_x_vel, bounce_y_vel] = breakout.ball_velocity();
+    CHECK(bounce_x_vel == -1);
+    CHECK(bounce_y_vel == -1);
+    CHECK(bounce_y_vel == launch_y_vel);
+  }
 }
