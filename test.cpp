@@ -247,4 +247,13 @@ TEST_CASE("breakout game") {
     CHECK(ball_x == paddle_x);
     CHECK(ball_y == paddle_y - 1);
   }
+
+  SUBCASE("ball does not move with paddle after launch") {
+    const auto [ball_x, ball_y] = breakout.ball_position();
+    breakout.launch();
+    breakout.move_paddle_right(10);
+    const auto [next_ball_x, next_ball_y] = breakout.ball_position();
+    CHECK(ball_x == next_ball_x);
+    CHECK(ball_y == next_ball_y);
+  }
 }
