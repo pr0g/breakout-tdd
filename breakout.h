@@ -43,7 +43,9 @@ public:
   }
 
   void move_paddle_right(const int distance) {
-    paddle_position_.first += distance;
+    if (paddle_right_edge() + distance < board_size_.first) {
+      paddle_position_.first += distance;
+    }
   }
 
   void display_board(display_t& display) {
