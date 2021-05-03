@@ -1,11 +1,11 @@
 # todo
 
 - ~~board dimensions/size~~
-- block count (horizontal/vertical)
 - ~~paddle position (initial)~~
-- paddle movement (input)
+- ~~paddle movement (input)~~
 - ~~game border (outline)~~
-- border margin/padding
+- ~~border margin/padding~~
+- block count (horizontal/vertical)
 - ball movement
 - ball wall collision
 - ball paddle/block collision
