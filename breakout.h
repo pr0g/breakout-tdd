@@ -15,6 +15,7 @@ class breakout_t {
   std::pair<int, int> paddle_position_;
   std::pair<int, int> paddle_size_;
   std::pair<int, int> ball_position_;
+  bool launched_ = false;
 
 public:
   int score() { return 0; }
@@ -41,6 +42,8 @@ public:
   int horizontal_spacing() const { return 1; }
   int vertical_spacing() const { return 1; }
 
+  void launch() { launched_ = true; }
+
   int paddle_left_edge() const {
     return paddle_position().first - paddle_size().first / 2;
   }
@@ -53,7 +56,9 @@ public:
     if (paddle_left_edge() > 1) {
       paddle_position_.first -= move;
     }
-    ball_position_.first = paddle_position_.first;
+    if (!launched_) {
+      ball_position_.first = paddle_position_.first;
+    }
   }
 
   void move_paddle_right(const int distance) {
@@ -61,7 +66,9 @@ public:
     if (paddle_right_edge() < board_size_.first) {
       paddle_position_.first += move;
     }
-    ball_position_.first = paddle_position_.first;
+    if (!launched_) {
+      ball_position_.first = paddle_position_.first;
+    }
   }
 
   void display_board(display_t& display) {
