@@ -5,6 +5,7 @@
 - ~~paddle movement (input)~~
 - ~~game border (outline)~~
 - ~~border margin/padding~~
+- ~~block display~~
 - block count (horizontal/vertical)
 - ball movement
 - ball wall collision
