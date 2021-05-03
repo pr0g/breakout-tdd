@@ -16,27 +16,29 @@ TEST_CASE("breakout game") {
 
   int test_x = 10;
   int test_y = 5;
-  int test_width = 100;
+  int test_width = 101;
   int test_height = 80;
   breakout.setup(test_x, test_y, test_width, test_height);
 
   SUBCASE("initial score is zero") { CHECK(breakout.score() == 0); }
   SUBCASE("board play area") {
     const auto [x, y] = breakout.board_offset();
-    CHECK(x == 10);
-    CHECK(y == 5);
+    CHECK(x == test_x);
+    CHECK(y == test_y);
 
     const auto [width, height] = breakout.board_size();
-    CHECK(width == 100);
-    CHECK(height == 80);
+    CHECK(width == test_width);
+    CHECK(height == test_height);
   }
 
   SUBCASE("board outline displayed") {
     display_test_t display_test;
     breakout.display_board(display_test);
 
-    // 100x2 + 78x2 = 556
-    CHECK(display_test.positions_.size() == 360);
+    const int outline_character_count =
+      ((breakout.board_size().first + 1) * 2)
+      + ((breakout.board_size().second - 1) * 2);
+    CHECK(display_test.positions_.size() == outline_character_count);
 
     int x_max = 0;
     int x_min = INT_MAX;
@@ -49,10 +51,10 @@ TEST_CASE("breakout game") {
       y_min = std::min(position.second, y_min);
     }
 
-    CHECK(x_min == 10);
-    CHECK(x_max == 110);
-    CHECK(y_min == 5);
-    CHECK(y_max == 85);
+    CHECK(x_min == breakout.board_offset().first);
+    CHECK(x_max == breakout.board_size().first + breakout.board_offset().first);
+    CHECK(y_min == breakout.board_offset().second);
+    CHECK(y_max == breakout.board_size().second + breakout.board_offset().second);
   }
 
   SUBCASE("paddle begins centered (board space)") {
