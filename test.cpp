@@ -276,7 +276,7 @@ TEST_CASE("breakout game") {
     }
   }
 
-  SUBCASE("ball bounces off of vertical walls") {
+  SUBCASE("ball bounces off of right wall") {
     breakout.move_paddle_right(100);
     breakout.launch();
     const auto [launch_x_vel, launch_y_vel] = breakout.ball_velocity();
@@ -286,6 +286,20 @@ TEST_CASE("breakout game") {
     }
     const auto [bounce_x_vel, bounce_y_vel] = breakout.ball_velocity();
     CHECK(bounce_x_vel == -1);
+    CHECK(bounce_y_vel == -1);
+    CHECK(bounce_y_vel == launch_y_vel);
+  }
+
+  SUBCASE("ball bounces off of left wall") {
+    breakout.move_paddle_left(100);
+    breakout.launch_left();
+    const auto [launch_x_vel, launch_y_vel] = breakout.ball_velocity();
+    CHECK(launch_x_vel == -1);
+    for (int i = 0; i < 4; ++i) {
+      breakout.step();
+    }
+    const auto [bounce_x_vel, bounce_y_vel] = breakout.ball_velocity();
+    CHECK(bounce_x_vel == 1);
     CHECK(bounce_y_vel == -1);
     CHECK(bounce_y_vel == launch_y_vel);
   }
