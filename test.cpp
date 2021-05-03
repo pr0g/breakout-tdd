@@ -226,4 +226,17 @@ TEST_CASE("breakout game") {
     CHECK(ball_x == paddle_x);
     CHECK(ball_y == paddle_y - 1);
   }
+
+  SUBCASE("ball displayed") {
+    display_test_t display_test;
+    breakout.display_ball(display_test);
+
+    CHECK(display_test.positions_.size() == 1);
+    CHECK(
+      display_test.positions_.front().first
+      == breakout.board_offset().first + breakout.paddle_position().first);
+    CHECK(
+      display_test.positions_.front().second
+      == breakout.board_offset().second + breakout.paddle_position().second);
+  }
 }
