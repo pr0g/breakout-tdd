@@ -124,4 +124,11 @@ TEST_CASE("breakout game") {
     const auto after_paddle_right_x = breakout.paddle_right_edge();
     CHECK(after_paddle_right_x == before_paddle_right_x);
   }
+
+  SUBCASE("overshoot left/right is constrained") {
+    breakout.move_paddle_right(1000);
+    CHECK(breakout.paddle_right_edge() == breakout.board_size().first - 1);
+    breakout.move_paddle_left(500);
+    CHECK(breakout.paddle_left_edge() == 1);
+  }
 }
