@@ -36,6 +36,9 @@ int main(int argc, char** argv) {
       case KEY_RIGHT:
         breakout.move_paddle_right(1);
         break;
+      case ' ': // space
+        breakout.launch();
+        break;
       default:
         break;
     }
