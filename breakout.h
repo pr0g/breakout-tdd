@@ -73,6 +73,13 @@ public:
     try_move_ball();
   }
 
+  void step() {
+    if (launched_) {
+      ball_position_.first += 1;
+      ball_position_.second -= 1;
+    }
+  }
+
   void display_board(display_t& display) {
     const auto [board_width, board_height] = board_size_;
     const auto [board_x, board_y] = board_offset_;
