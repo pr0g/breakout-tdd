@@ -239,4 +239,12 @@ TEST_CASE("breakout game") {
       display_test.positions_.front().second
       == breakout.board_offset().second + breakout.ball_position().second);
   }
+
+  SUBCASE("ball moves with paddle before launch") {
+    breakout.move_paddle_left(10);
+    const auto [paddle_x, paddle_y] = breakout.paddle_position();
+    const auto [ball_x, ball_y] = breakout.ball_position();
+    CHECK(ball_x == paddle_x);
+    CHECK(ball_y == paddle_y - 1);
+  }
 }
