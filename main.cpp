@@ -26,6 +26,7 @@ int main(int argc, char** argv) {
     breakout.display_board(display_console);
     breakout.display_paddle(display_console);
     breakout.display_blocks(display_console);
+    breakout.display_ball(display_console);
 
     refresh();
     switch (int key = getch(); key) {
