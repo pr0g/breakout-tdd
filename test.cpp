@@ -54,7 +54,8 @@ TEST_CASE("breakout game") {
     CHECK(x_min == breakout.board_offset().first);
     CHECK(x_max == breakout.board_size().first + breakout.board_offset().first);
     CHECK(y_min == breakout.board_offset().second);
-    CHECK(y_max == breakout.board_size().second + breakout.board_offset().second);
+    CHECK(
+      y_max == breakout.board_size().second + breakout.board_offset().second);
   }
 
   SUBCASE("paddle begins centered (board space)") {
@@ -132,5 +133,16 @@ TEST_CASE("breakout game") {
     CHECK(breakout.paddle_right_edge() == breakout.board_size().first - 1);
     breakout.move_paddle_left(500);
     CHECK(breakout.paddle_left_edge() == 1);
+  }
+
+  SUBCASE("blocks are displayed") {
+    display_test_t display_test;
+    breakout.display_blocks(display_test);
+
+    const int output_count = breakout.blocks_horizontal()
+                           * breakout.blocks_vertical()
+                           * breakout.block_width();
+
+    CHECK(display_test.positions_.size() == output_count);
   }
 }
