@@ -105,4 +105,13 @@ TEST_CASE("breakout game") {
     auto [paddle_x, _2] = breakout.paddle_position();
     CHECK(paddle_x == start_paddle_x + distance);
   }
+
+  SUBCASE("paddle cannot be moved passed left edge") {
+    const auto start_paddle_left_x = breakout.paddle_left_edge();
+    breakout.move_paddle_left(start_paddle_left_x - 1);
+    const auto before_paddle_left_x = breakout.paddle_left_edge();
+    breakout.move_paddle_left(1);
+    const auto after_paddle_left_x = breakout.paddle_left_edge();
+    CHECK(after_paddle_left_x == before_paddle_left_x);
+  }
 }
