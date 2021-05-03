@@ -37,7 +37,9 @@ public:
   }
 
   void move_paddle_left(const int distance) {
-    paddle_position_.first -= distance;
+    if (paddle_left_edge() - distance > 0) {
+      paddle_position_.first -= distance;
+    }
   }
 
   void move_paddle_right(const int distance) {
