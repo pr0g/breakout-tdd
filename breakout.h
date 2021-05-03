@@ -82,7 +82,9 @@ public:
     for (int row = 0; row < blocks_vertical(); ++row) {
       for (int col = 0; col < blocks_horizontal(); ++col) {
         for (int block_part = 0; block_part < block_width(); ++block_part) {
-          display.output(col, row);
+          display.output(
+            board_offset().first + 2 + block_part + ((block_width() + 1) * col),
+            board_offset().second + 1 + (row * 2));
         }
       }
     }
