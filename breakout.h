@@ -37,14 +37,16 @@ public:
   }
 
   void move_paddle_left(const int distance) {
-    if (paddle_left_edge() - distance > 0) {
-      paddle_position_.first -= distance;
+    int move = std::min(paddle_left_edge() - 1, distance);
+    if (paddle_left_edge() > 1) {
+      paddle_position_.first -= move;
     }
   }
 
   void move_paddle_right(const int distance) {
-    if (paddle_right_edge() + distance < board_size_.first) {
-      paddle_position_.first += distance;
+    int move = std::min(board_size_.first - paddle_right_edge() - 1, distance);
+    if (paddle_right_edge() < board_size_.first) {
+      paddle_position_.first += move;
     }
   }
 
