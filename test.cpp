@@ -343,4 +343,14 @@ TEST_CASE("breakout game") {
     }
     CHECK(breakout.state() == breakout_t::game_state_e::lost_life);
   }
+
+  SUBCASE("paddle detects ball intersection") {
+    paddle_t paddle;
+    paddle.set_position(50, 50);
+    paddle.set_width(10);
+
+    ball_t ball;
+    ball.set_position(49, 50);
+    CHECK(!paddle.intersects(ball));
+  }
 }
