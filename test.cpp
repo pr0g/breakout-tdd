@@ -362,4 +362,21 @@ TEST_CASE("breakout game") {
     ball.position_ = {55, 50};
     CHECK(!intersects(paddle, ball));
   }
+
+  SUBCASE("ball vertical velocity switches after intersection") {
+    paddle_t paddle;
+    paddle.position_ = {50, 50};
+
+    ball_t ball;
+    ball.position_ = {45, 45};
+    ball.velocity_ = {1, 1};
+
+    for (int i = 0; i < 10; ++i) {
+      step(paddle, ball);
+    }
+
+    CHECK(ball.velocity_.second == -1);
+    CHECK(ball.position_.second == 55);
+    CHECK(ball.position_.second == 45);
+  }
 }
