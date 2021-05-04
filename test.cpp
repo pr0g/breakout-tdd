@@ -361,11 +361,18 @@ TEST_CASE("breakout game") {
 
     ball.position_ = {55, 50};
     CHECK(!intersects(paddle, ball));
+
+    ball.position_ = {50, 49};
+    CHECK(!intersects(paddle, ball));
+
+    ball.position_ = {50, 51};
+    CHECK(!intersects(paddle, ball));
   }
 
   SUBCASE("ball vertical velocity switches after intersection") {
     paddle_t paddle;
     paddle.position_ = {50, 50};
+    paddle.width_ = 10;
 
     ball_t ball;
     ball.position_ = {45, 45};
@@ -376,7 +383,7 @@ TEST_CASE("breakout game") {
     }
 
     CHECK(ball.velocity_.second == -1);
-    CHECK(ball.position_.second == 55);
+    CHECK(ball.position_.first == 55);
     CHECK(ball.position_.second == 45);
   }
 }

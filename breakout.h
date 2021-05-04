@@ -28,10 +28,19 @@ bool intersects(const paddle_t& paddle, const ball_t& ball) {
   if (
     ball.position_.first >= paddle.left_edge()
     && ball.position_.first <= paddle.right_edge()
-    && ball.position_.second <= paddle.position_.second + 1) {
+    && ball.position_.second >= paddle.position_.second
+    && ball.position_.second <= paddle.position_.second) {
     return true;
   }
   return false;
+}
+
+void step(const paddle_t& paddle, ball_t& ball) {
+  ball.position_.first += ball.velocity_.first;
+  ball.position_.second += ball.velocity_.second;
+  if (intersects(paddle, ball)) {
+    ball.velocity_.second *= -1;
+  }
 }
 
 class breakout_t {
@@ -104,8 +113,7 @@ public:
 
   void step() {
     if (state_ == game_state_e::launched) {
-      ball_.position_.first += ball_.velocity_.first;
-      ball_.position_.second += ball_.velocity_.second;
+      ::step(paddle_, ball_);
       if (
         ball_.position_.first >= board_size_.first - 1
         || ball_.position_.first <= 1) {
