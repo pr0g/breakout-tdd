@@ -369,7 +369,7 @@ TEST_CASE("breakout game") {
     CHECK(!intersects(paddle, ball));
   }
 
-  SUBCASE("ball vertical velocity switches after intersection") {
+  SUBCASE("ball vertical velocity switches after paddle intersection") {
     paddle_t paddle;
     paddle.position_ = {50, 50};
     paddle.width_ = 10;
@@ -411,11 +411,54 @@ TEST_CASE("breakout game") {
     ball.position_ = {1, 1};
     CHECK(!intersects(blocks, ball));
 
+    {
+      const int block_x =
+        blocks.horizontal_padding
+        + ((blocks.block_width + blocks.horizontal_spacing) * 1);
+      const int block_y = blocks.vertical_padding
+                        + ((blocks.block_height + blocks.vertical_spacing) * 2);
+      ball.position_ = {block_x, block_y};
+      CHECK(intersects(blocks, ball));
+    }
+
+    {
+      const int block_x = blocks.horizontal_padding
+                        + ((blocks.block_width + blocks.horizontal_spacing)
+                           * (breakout.blocks_horizontal() - 1));
+      const int block_y = blocks.vertical_padding
+                        + ((blocks.block_height + blocks.vertical_spacing)
+                           * (breakout.blocks_vertical() - 1));
+      ball.position_ = {block_x + 1, block_y};
+      CHECK(intersects(blocks, ball));
+    }
+  }
+
+  SUBCASE("ball vertical velocity switches after block intersection") {
+    blocks_t blocks;
+    blocks.horizontal_padding = breakout.horizontal_padding();
+    blocks.vertical_padding = breakout.vertical_padding();
+    blocks.horizontal_spacing = breakout.horizontal_spacing();
+    blocks.vertical_spacing = breakout.vertical_spacing();
+    blocks.horizontal_count = breakout.blocks_horizontal();
+    blocks.vertical_count = breakout.blocks_vertical();
+    blocks.block_height = breakout.block_height();
+    blocks.block_width = breakout.block_width();
+
+    ball_t ball;
+    ball.velocity_ = {1, 1};
+
     const int block_x = blocks.horizontal_padding
-                      + ((blocks.block_width + blocks.horizontal_spacing) * 1);
+                      + ((blocks.block_width + blocks.horizontal_spacing)
+                         * breakout.blocks_horizontal());
     const int block_y = blocks.vertical_padding
-                      + ((blocks.block_height + blocks.vertical_spacing) * 2);
+                      + ((blocks.block_height + blocks.vertical_spacing)
+                         * breakout.blocks_vertical());
+
     ball.position_ = {block_x, block_y};
-    CHECK(intersects(blocks, ball));
+
+    check(blocks, ball);
+
+    CHECK(ball.velocity_.first == 1);
+    CHECK(ball.velocity_.second == -1);
   }
 }
