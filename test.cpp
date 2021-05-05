@@ -386,4 +386,19 @@ TEST_CASE("breakout game") {
     CHECK(ball.position_.first == 55);
     CHECK(ball.position_.second == 45);
   }
+
+  SUBCASE("ball intersects block") {
+    blocks_t blocks;
+    blocks.horizontal_padding = breakout.horizontal_padding();
+    blocks.vertical_padding = breakout.vertical_padding();
+    blocks.horizontal_spacing = breakout.horizontal_spacing();
+    blocks.vertical_spacing = breakout.vertical_spacing();
+    blocks.horizontal_count = breakout.blocks_horizontal();
+    blocks.vertical_count = breakout.blocks_vertical();
+
+    ball_t ball;
+    ball.position_ = {blocks.horizontal_padding, blocks.vertical_padding};
+
+    CHECK(intersect(blocks, ball));
+  }
 }
