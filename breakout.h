@@ -47,8 +47,8 @@ bool intersects(const paddle_t& paddle, const ball_t& ball) {
 }
 
 bool intersects(const blocks_t& blocks, const ball_t& ball) {
-  for (int row = 0; row < blocks.horizontal_count; row++) {
-    for (int col = 0; col < blocks.vertical_count; col++) {
+  for (int row = 0; row < blocks.vertical_count; row++) {
+    for (int col = 0; col < blocks.horizontal_count; col++) {
       const int block_x =
         blocks.horizontal_padding
         + ((blocks.block_width + blocks.horizontal_spacing) * col);
