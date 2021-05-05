@@ -308,7 +308,7 @@ TEST_CASE("breakout game") {
     const auto start_ball_y = breakout.ball_position().second;
     breakout.launch_left();
     const auto [launch_x_vel, launch_y_vel] = breakout.ball_velocity();
-    for (int i = 0; i < start_ball_y - 1; ++i) {
+    for (int i = 0; i < start_ball_y; ++i) {
       breakout.step();
     }
     const auto [bounce_x_vel, bounce_y_vel] = breakout.ball_velocity();
