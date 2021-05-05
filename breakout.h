@@ -119,7 +119,7 @@ public:
         || ball_.position_.first <= 1) {
         ball_.velocity_.first *= -1;
       }
-      if (ball_.position_.second <= 1) {
+      if (ball_.position_.second <= 0) {
         ball_.velocity_.second *= -1;
       }
       if (ball_.position_.second >= board_size_.second) {
