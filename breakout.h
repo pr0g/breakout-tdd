@@ -230,3 +230,16 @@ private:
     ball_.velocity_ = velocity;
   }
 };
+
+blocks_t create_blocks(const breakout_t& breakout) {
+  blocks_t blocks;
+  blocks.horizontal_padding = breakout.horizontal_padding();
+  blocks.vertical_padding = breakout.vertical_padding();
+  blocks.horizontal_spacing = breakout.horizontal_spacing();
+  blocks.vertical_spacing = breakout.vertical_spacing();
+  blocks.horizontal_count = breakout.blocks_horizontal();
+  blocks.vertical_count = breakout.blocks_vertical();
+  blocks.block_height = breakout.block_height();
+  blocks.block_width = breakout.block_width();
+  return blocks;
+}

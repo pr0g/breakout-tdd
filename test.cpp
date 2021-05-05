@@ -388,15 +388,7 @@ TEST_CASE("breakout game") {
   }
 
   SUBCASE("ball intersects block") {
-    blocks_t blocks;
-    blocks.horizontal_padding = breakout.horizontal_padding();
-    blocks.vertical_padding = breakout.vertical_padding();
-    blocks.horizontal_spacing = breakout.horizontal_spacing();
-    blocks.vertical_spacing = breakout.vertical_spacing();
-    blocks.horizontal_count = breakout.blocks_horizontal();
-    blocks.vertical_count = breakout.blocks_vertical();
-    blocks.block_height = breakout.block_height();
-    blocks.block_width = breakout.block_width();
+    blocks_t blocks = create_blocks(breakout);
 
     ball_t ball;
     // top left block
@@ -434,15 +426,7 @@ TEST_CASE("breakout game") {
   }
 
   SUBCASE("ball vertical velocity switches after block intersection") {
-    blocks_t blocks;
-    blocks.horizontal_padding = breakout.horizontal_padding();
-    blocks.vertical_padding = breakout.vertical_padding();
-    blocks.horizontal_spacing = breakout.horizontal_spacing();
-    blocks.vertical_spacing = breakout.vertical_spacing();
-    blocks.horizontal_count = breakout.blocks_horizontal();
-    blocks.vertical_count = breakout.blocks_vertical();
-    blocks.block_height = breakout.block_height();
-    blocks.block_width = breakout.block_width();
+    blocks_t blocks = create_blocks(breakout);
 
     ball_t ball;
     ball.velocity_ = {1, 1};
