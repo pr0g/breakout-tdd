@@ -428,7 +428,7 @@ TEST_CASE("breakout game") {
       const int block_y = blocks.vertical_padding
                         + ((blocks.block_height + blocks.vertical_spacing)
                            * (breakout.blocks_vertical() - 1));
-      ball.position_ = {block_x + 1, block_y};
+      ball.position_ = {block_x, block_y};
       CHECK(intersects(blocks, ball));
     }
   }
@@ -449,10 +449,10 @@ TEST_CASE("breakout game") {
 
     const int block_x = blocks.horizontal_padding
                       + ((blocks.block_width + blocks.horizontal_spacing)
-                         * breakout.blocks_horizontal());
+                         * (breakout.blocks_horizontal() - 1));
     const int block_y = blocks.vertical_padding
                       + ((blocks.block_height + blocks.vertical_spacing)
-                         * breakout.blocks_vertical());
+                         * (breakout.blocks_vertical() - 1));
 
     ball.position_ = {block_x, block_y};
 
