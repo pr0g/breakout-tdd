@@ -24,6 +24,17 @@ struct ball_t {
   std::pair<int, int> velocity_;
 };
 
+struct blocks_t {
+  int horizontal_padding;
+  int vertical_padding;
+  int horizontal_spacing;
+  int vertical_spacing;
+  int horizontal_count;
+  int vertical_count;
+  int block_height;
+  int block_width;
+};
+
 bool intersects(const paddle_t& paddle, const ball_t& ball) {
   if (
     ball.position_.first >= paddle.left_edge()
@@ -31,6 +42,26 @@ bool intersects(const paddle_t& paddle, const ball_t& ball) {
     && ball.position_.second >= paddle.position_.second
     && ball.position_.second <= paddle.position_.second) {
     return true;
+  }
+  return false;
+}
+
+bool intersects(const blocks_t& blocks, const ball_t& ball) {
+  for (int row = 0; row < blocks.horizontal_count; row++) {
+    for (int col = 0; col < blocks.vertical_count; col++) {
+      const int block_x =
+        blocks.horizontal_padding
+        + ((blocks.block_width + blocks.horizontal_spacing) * col);
+      const int block_y =
+        blocks.vertical_padding
+        + ((blocks.block_height + blocks.vertical_spacing) * row);
+      if (
+        ball.position_.first >= block_x
+        && ball.position_.first <= block_x + blocks.block_width
+        && ball.position_.second == block_y) {
+        return true;
+      }
+    }
   }
   return false;
 }

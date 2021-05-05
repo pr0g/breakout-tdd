@@ -395,10 +395,27 @@ TEST_CASE("breakout game") {
     blocks.vertical_spacing = breakout.vertical_spacing();
     blocks.horizontal_count = breakout.blocks_horizontal();
     blocks.vertical_count = breakout.blocks_vertical();
+    blocks.block_height = breakout.block_height();
+    blocks.block_width = breakout.block_width();
 
     ball_t ball;
+    // top left block
     ball.position_ = {blocks.horizontal_padding, blocks.vertical_padding};
+    CHECK(intersects(blocks, ball));
 
-    CHECK(intersect(blocks, ball));
+    // top left (board outline)
+    ball.position_ = {0, 0};
+    CHECK(!intersects(blocks, ball));
+
+    // top left (board)
+    ball.position_ = {1, 1};
+    CHECK(!intersects(blocks, ball));
+
+    const int block_x = blocks.horizontal_padding
+                      + ((blocks.block_width + blocks.horizontal_spacing) * 1);
+    const int block_y = blocks.vertical_padding
+                      + ((blocks.block_height + blocks.vertical_spacing) * 2);
+    ball.position_ = {block_x, block_y};
+    CHECK(intersects(blocks, ball));
   }
 }
