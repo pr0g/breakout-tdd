@@ -98,6 +98,9 @@ public:
     lives_ = 3;
   }
 
+  using bounce_fn_t = std::function<void(const blocks_t& blocks, ball_t& ball)>;
+  void set_bounce_fn(const bounce_fn_t& bounce_fn) { bounce_fn_ = bounce_fn; }
+
   [[nodiscard]] std::pair<int, int> board_offset() const {
     return board_offset_;
   }
@@ -222,6 +225,7 @@ private:
   ball_t ball_;
   int lives_;
   game_state_e state_;
+  bounce_fn_t bounce_fn_;
 
   void try_move_ball() {
     if (state_ != game_state_e::launched) {
