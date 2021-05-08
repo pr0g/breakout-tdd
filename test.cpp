@@ -629,4 +629,21 @@ TEST_CASE("breakout game") {
     }
     CHECK(breakout.block_score() * hit_count == breakout.score());
   }
+
+  SUBCASE("zero lives results in game over") {
+    while (true) {
+      if (breakout.lives() == 0) {
+        break;
+      }
+      breakout.launch_left();
+      while (true) {
+        breakout.step();
+        if (!breakout.launched()) {
+          break;
+        }
+      }
+    }
+
+    CHECK(breakout.state() == breakout_t::game_state_e::game_over);
+  }
 }
