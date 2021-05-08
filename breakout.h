@@ -1,5 +1,6 @@
 #pragma once
 
+#include <deque>
 #include <utility>
 
 struct display_t {
@@ -33,6 +34,8 @@ struct blocks_t {
   int vertical_count;
   int block_height;
   int block_width;
+
+  bool destroyed_ = false;
 };
 
 bool intersects(const paddle_t& paddle, const ball_t& ball) {
@@ -84,11 +87,11 @@ class breakout_t;
 blocks_t create_blocks(const breakout_t& breakout);
 
 bool block_destroyed(const blocks_t blocks, int col, int row) {
-  return true;
+  return blocks.destroyed_;
 }
 
 void destroy_block(blocks_t& blocks, int col, int row) {
-
+  blocks.destroyed_ = true;
 }
 
 class breakout_t {
