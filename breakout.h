@@ -53,11 +53,9 @@ bool intersects(const blocks_t& blocks, const ball_t& ball) {
   for (int row = 0; row < blocks.row_count; row++) {
     for (int col = 0; col < blocks.col_count; col++) {
       const int block_x =
-        blocks.col_padding
-        + ((blocks.block_width + blocks.col_spacing) * col);
+        blocks.col_padding + ((blocks.block_width + blocks.col_spacing) * col);
       const int block_y =
-        blocks.row_padding
-        + ((blocks.block_height + blocks.row_spacing) * row);
+        blocks.row_padding + ((blocks.block_height + blocks.row_spacing) * row);
       if (
         ball.position_.first >= block_x
         && ball.position_.first <= block_x + blocks.block_width
@@ -81,6 +79,10 @@ void bounce(const blocks_t& blocks, ball_t& ball) {
   if (intersects(blocks, ball)) {
     ball.velocity_.second *= -1;
   }
+}
+
+std::pair<int, int> block_position(const blocks_t& blocks, int col, int row) {
+  return std::pair{0, 0};
 }
 
 class breakout_t;
@@ -218,8 +220,7 @@ public:
           display.output(
             board_x + col_padding() + block_part
               + ((block_width() + col_spacing()) * col),
-            board_y + row_padding()
-              + ((block_height() + row_spacing()) * row));
+            board_y + row_padding() + ((block_height() + row_spacing()) * row));
         }
       }
     }
@@ -262,7 +263,7 @@ blocks_t create_blocks(const breakout_t& breakout) {
   blocks.row_count = breakout.block_rows();
   blocks.block_height = breakout.block_height();
   blocks.block_width = breakout.block_width();
-  blocks.destroyed_ = std::deque<bool>(
-    breakout.block_cols() * breakout.block_rows(), false);
+  blocks.destroyed_ =
+    std::deque<bool>(breakout.block_cols() * breakout.block_rows(), false);
   return blocks;
 }
