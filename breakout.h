@@ -153,14 +153,18 @@ public:
   void setup(int x, int y, int width, int height) {
     board_size_ = {width, height};
     board_offset_ = {x, y};
-    paddle_.position_ = {width / 2, height - 1};
+    block_bounce_fn_ = ::block_bounce;
+    restart();
+  }
+
+  void restart() {
+    paddle_.position_ = {board_size_.x_ / 2, board_size_.y_ - 1};
     paddle_.width_ = 10; // default size
     ball_.position_ = {paddle_.position_.x_, paddle_.position_.y_ - 1};
     ball_.velocity_ = {0, 0};
     state_ = game_state_e::preparing;
-    lives_ = 3;
+    lives_ = starting_lives();
     score_ = 0;
-    block_bounce_fn_ = ::block_bounce;
     blocks_ = create_blocks(*this);
   }
 
@@ -184,6 +188,7 @@ public:
   [[nodiscard]] int col_margin() const { return 2; }
   [[nodiscard]] int col_spacing() const { return 1; }
   [[nodiscard]] int row_spacing() const { return 1; }
+  [[nodiscard]] int starting_lives() const { return 3; }
 
   [[nodiscard]] game_state_e state() const { return state_; }
   [[nodiscard]] bool launched() const {
