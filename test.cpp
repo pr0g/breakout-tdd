@@ -630,7 +630,7 @@ TEST_CASE("breakout game") {
     CHECK(breakout.block_score() * hit_count == breakout.score());
   }
 
-  SUBCASE("zero lives results in game over") {
+  auto simulate_game_over = [](breakout_t& breakout) {
     while (true) {
       if (breakout.lives() == 0) {
         break;
@@ -643,7 +643,10 @@ TEST_CASE("breakout game") {
         }
       }
     }
+  };
 
+  SUBCASE("zero lives results in game over") {
+    simulate_game_over(breakout);
     CHECK(breakout.state() == breakout_t::game_state_e::game_over);
   }
 
@@ -652,5 +655,21 @@ TEST_CASE("breakout game") {
     breakout.step();
     breakout.launch_right();
     CHECK(breakout.ball_velocity().x_ == -1);
+  }
+
+  SUBCASE("restart after game over") {
+    simulate_game_over(breakout);
+
+    breakout.restart();
+
+    const auto [board_width, board_height] = breakout.board_size();
+    const auto [paddle_x, paddle_y] = breakout.paddle_position();
+    const auto [ball_x, ball_y] = breakout.ball_position();
+    CHECK(breakout.state() == breakout_t::game_state_e::preparing);
+    CHECK(breakout.lives() == breakout.starting_lives());
+    CHECK(paddle_x == board_width / 2);
+    CHECK(paddle_y == board_height - 1);
+    CHECK(ball_x == paddle_x);
+    CHECK(ball_y == paddle_y - 1);
   }
 }
