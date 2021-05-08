@@ -319,6 +319,8 @@ TEST_CASE("breakout game") {
   }
 
   SUBCASE("ball bounces off of top wall") {
+    breakout.set_bounce_fn([](blocks_t&, ball_t&){});
+
     const auto start_ball_y = breakout.ball_position().y_;
     breakout.launch_left();
     const auto [launch_x_vel, launch_y_vel] = breakout.ball_velocity();
