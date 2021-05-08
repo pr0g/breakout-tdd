@@ -83,6 +83,14 @@ void bounce(const blocks_t& blocks, ball_t& ball) {
 class breakout_t;
 blocks_t create_blocks(const breakout_t& breakout);
 
+bool block_destroyed(const blocks_t blocks, int col, int row) {
+  return true;
+}
+
+void destroy_block(blocks_t& blocks, int col, int row) {
+
+}
+
 class breakout_t {
 public:
   enum class game_state_e { preparing, launched, lost_life };
