@@ -489,22 +489,23 @@ TEST_CASE("breakout game") {
       block_position(blocks, blocks.col_count - 1, blocks.row_count - 1);
 
     CHECK(
-      top_left_position.first == blocks.col_padding + blocks.block_width / 2);
+      top_left_position.first
+      == blocks.col_padding + ((blocks.block_width - 1) / 2));
     CHECK(top_left_position.second == blocks.row_padding);
 
     CHECK(center_position.first == breakout.board_size().first / 2);
     CHECK(
       center_position.second
       == blocks.row_padding
-           + ((blocks.row_count / 2) * blocks.block_height + blocks.row_spacing));
+           + ((blocks.row_count / 2) * (blocks.block_height + blocks.row_spacing)));
 
     CHECK(
       bottom_right_position.first
       == breakout.board_size().first - blocks.col_padding
            - (blocks.block_width / 2));
     CHECK(
-      center_position.second
+      bottom_right_position.second
       == blocks.row_padding
-           + (blocks.row_count * blocks.block_height + blocks.row_spacing));
+           + ((blocks.row_count - 1) * (blocks.block_height + blocks.row_spacing)));
   }
 }
