@@ -514,8 +514,10 @@ TEST_CASE("breakout game") {
   SUBCASE("invalid block position returns empty") {
     const blocks_t blocks = create_blocks(breakout);
 
-    const auto empty = block_position(blocks, 100, 100);
+    const auto empty_large = block_position(blocks, 100, 100);
+    const auto empty_invalid = block_position(blocks, -1, -1);
 
-    CHECK(!empty.has_value());
+    CHECK(!empty_large.has_value());
+    CHECK(!empty_invalid.has_value());
   }
 }
