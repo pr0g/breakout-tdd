@@ -136,16 +136,17 @@ public:
   void launch_right() { launch({1, -1}); }
 
   void move_paddle_left(const int distance) {
-    int move = std::min(paddle_left_edge() - 1, distance);
     if (paddle_left_edge() > 1) {
+      const int move = std::min(paddle_left_edge() - 1, distance);
       paddle_.position_.first -= move;
     }
     try_move_ball();
   }
 
   void move_paddle_right(const int distance) {
-    int move = std::min(board_size_.first - paddle_right_edge() - 1, distance);
     if (paddle_right_edge() < board_size_.first) {
+      const int move =
+        std::min(board_size_.first - paddle_right_edge() - 1, distance);
       paddle_.position_.first += move;
     }
     try_move_ball();
