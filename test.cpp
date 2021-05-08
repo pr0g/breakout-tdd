@@ -371,6 +371,18 @@ TEST_CASE("breakout game") {
     CHECK(breakout.state() == breakout_t::game_state_e::lost_life);
   }
 
+  SUBCASE("ball velocity reset after losing life") {
+    breakout.launch_left();
+    while (true) {
+      breakout.step();
+      if (breakout.state() == breakout_t::game_state_e::lost_life) {
+        breakout.step();
+        break;
+      }
+    }
+    CHECK(breakout.ball_velocity() == vec2{0, 0});
+  }
+
   SUBCASE("paddle detects ball intersection") {
     paddle_t paddle;
     paddle.position_ = {50, 50};
