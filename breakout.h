@@ -96,6 +96,7 @@ public:
     ball_.velocity_ = {0, 0};
     state_ = game_state_e::preparing;
     lives_ = 3;
+    bounce_fn_ = ::bounce;
   }
 
   using bounce_fn_t = std::function<void(const blocks_t& blocks, ball_t& ball)>;
@@ -158,6 +159,7 @@ public:
   void step() {
     if (state_ == game_state_e::launched) {
       ::step(paddle_, ball_);
+      bounce_fn_(blocks_t{}, ball_);
       if (
         ball_.position_.first >= board_size_.first - 1
         || ball_.position_.first <= 1) {
