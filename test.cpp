@@ -453,6 +453,7 @@ TEST_CASE("breakout game") {
     };
 
     breakout.set_bounce_fn(bounce_fn);
+    breakout.step();
 
     CHECK(called);
   }
