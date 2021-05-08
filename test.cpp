@@ -346,11 +346,12 @@ TEST_CASE("breakout game") {
     CHECK(breakout.lives() == starting_lives - 1);
   }
 
-  SUBCASE("ball reset after losing life") {
+  SUBCASE("ball position reset after losing life") {
     breakout.launch_left();
     while (true) {
       breakout.step();
       if (breakout.state() == breakout_t::game_state_e::lost_life) {
+        breakout.step();
         break;
       }
     }

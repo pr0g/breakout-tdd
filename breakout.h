@@ -208,19 +208,29 @@ public:
   }
 
   void step() {
-    if (state_ == game_state_e::launched) {
-      ::step(paddle_, ball_);
-      bounce_fn_(blocks_, ball_);
-      if (ball_.position_.x_ >= board_size_.x_ - 1 || ball_.position_.x_ <= 1) {
-        ball_.velocity_.x_ *= -1;
-      }
-      if (ball_.position_.y_ <= 0) {
-        ball_.velocity_.y_ *= -1;
-      }
-      if (ball_.position_.y_ >= board_size_.y_) {
-        state_ = game_state_e::lost_life;
-        lives_--;
-      }
+    switch (state_) {
+      case game_state_e::preparing:
+        // noop
+        break;
+      case game_state_e::launched: {
+        ::step(paddle_, ball_);
+        bounce_fn_(blocks_, ball_);
+        if (
+          ball_.position_.x_ >= board_size_.x_ - 1 || ball_.position_.x_ <= 1) {
+          ball_.velocity_.x_ *= -1;
+        }
+        if (ball_.position_.y_ <= 0) {
+          ball_.velocity_.y_ *= -1;
+        }
+        if (ball_.position_.y_ >= board_size_.y_) {
+          state_ = game_state_e::lost_life;
+          lives_--;
+        }
+      } break;
+      case game_state_e::lost_life: {
+        ball_.position_ = vec2{paddle_.position_.x_, paddle_.position_.y_ - 1};
+        state_ = game_state_e::preparing;
+      } break;
     }
   }
 
