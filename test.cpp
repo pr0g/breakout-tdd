@@ -12,8 +12,7 @@ namespace doctest {
   struct StringMaker<vec2> {
     static String convert(const vec2& value) {
       return String(
-        (std::to_string(value.x_) + ", " + std::to_string(value.y_))
-          .c_str());
+        (std::to_string(value.x_) + ", " + std::to_string(value.y_)).c_str());
     }
   };
 } // namespace doctest
@@ -88,9 +87,8 @@ TEST_CASE("breakout game") {
     display_test_t display_test;
     breakout.display_board(display_test);
 
-    const int outline_character_count =
-      ((breakout.board_size().x_ + 1) * 2)
-      + ((breakout.board_size().y_ - 1) * 2);
+    const int outline_character_count = ((breakout.board_size().x_ + 1) * 2)
+                                      + ((breakout.board_size().y_ - 1) * 2);
     CHECK(display_test.positions_.size() == outline_character_count);
 
     int x_max = 0;
@@ -107,8 +105,7 @@ TEST_CASE("breakout game") {
     CHECK(x_min == breakout.board_offset().x_);
     CHECK(x_max == breakout.board_size().x_ + breakout.board_offset().x_);
     CHECK(y_min == breakout.board_offset().y_);
-    CHECK(
-      y_max == breakout.board_size().y_ + breakout.board_offset().y_);
+    CHECK(y_max == breakout.board_size().y_ + breakout.board_offset().y_);
   }
 
   SUBCASE("paddle begins centered (board space)") {
@@ -563,5 +560,19 @@ TEST_CASE("breakout game") {
 
     CHECK(block_destroyed(blocks, 0, 0));
     CHECK(!intersects(blocks, ball));
+  }
+
+  SUBCASE("destroyed blocks are not displayed") {
+    blocks_t blocks = create_blocks(breakout);
+
+    destroy_block(blocks, 0, 0);
+
+    display_block_test_t block_display_test(breakout.block_width());
+    display_blocks(blocks, vec2{0, 0}, block_display_test);
+
+    // first block was not drawn
+    CHECK(
+      block_display_test.blocks_.front().begin_.x_
+      == blocks.col_margin + blocks.block_width + blocks.col_spacing);
   }
 }
