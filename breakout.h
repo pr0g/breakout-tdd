@@ -101,7 +101,7 @@ void step(const paddle_t& paddle, ball_t& ball) {
   }
 }
 
-void bounce(blocks_t& blocks, ball_t& ball) {
+void block_bounce(blocks_t& blocks, ball_t& ball) {
   if (const auto block_col_row = intersects(blocks, ball)) {
     ball.velocity_.y_ *= -1;
     destroy_block(blocks, block_col_row->col_, block_col_row->row_);
@@ -154,12 +154,12 @@ public:
     ball_.velocity_ = {0, 0};
     state_ = game_state_e::preparing;
     lives_ = 3;
-    bounce_fn_ = ::bounce;
+    block_bounce_fn_ = ::block_bounce;
     blocks_ = create_blocks(*this);
   }
 
-  using bounce_fn_t = std::function<void(blocks_t& blocks, ball_t& ball)>;
-  void set_bounce_fn(const bounce_fn_t& bounce_fn) { bounce_fn_ = bounce_fn; }
+  using block_bounce_fn_t = std::function<void(blocks_t& blocks, ball_t& ball)>;
+  void set_block_bounce_fn(const block_bounce_fn_t& bounce_fn) { block_bounce_fn_ = bounce_fn; }
 
   [[nodiscard]] vec2 board_offset() const { return board_offset_; }
   [[nodiscard]] vec2 board_size() const { return board_size_; }
@@ -214,7 +214,7 @@ public:
         break;
       case game_state_e::launched: {
         ::step(paddle_, ball_);
-        bounce_fn_(blocks_, ball_);
+        block_bounce_fn_(blocks_, ball_);
         if (
           ball_.position_.x_ >= board_size_.x_ - 1 || ball_.position_.x_ <= 1) {
           ball_.velocity_.x_ *= -1;
@@ -277,7 +277,7 @@ private:
   ball_t ball_;
   int lives_;
   game_state_e state_;
-  bounce_fn_t bounce_fn_;
+  block_bounce_fn_t block_bounce_fn_;
   blocks_t blocks_;
 
   void try_move_ball() {

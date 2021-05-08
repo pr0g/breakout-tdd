@@ -319,7 +319,7 @@ TEST_CASE("breakout game") {
   }
 
   SUBCASE("ball bounces off of top wall") {
-    breakout.set_bounce_fn([](blocks_t&, ball_t&){});
+    breakout.set_block_bounce_fn([](blocks_t&, ball_t&){});
 
     const auto start_ball_y = breakout.ball_position().y_;
     breakout.launch_left();
@@ -480,19 +480,19 @@ TEST_CASE("breakout game") {
 
     ball.position_ = {block_x, block_y};
 
-    bounce(blocks, ball);
+    block_bounce(blocks, ball);
 
     CHECK(ball.velocity_.x_ == 1);
     CHECK(ball.velocity_.y_ == -1);
   }
 
-  SUBCASE("bounce called in breakout step") {
+  SUBCASE("block_bounce called in breakout step") {
     bool called = false;
     const auto bounce_fn = [&called](const blocks_t& blocks, ball_t ball) {
       called = true;
     };
 
-    breakout.set_bounce_fn(bounce_fn);
+    breakout.set_block_bounce_fn(bounce_fn);
     breakout.launch_right();
     breakout.step();
 
@@ -564,7 +564,7 @@ TEST_CASE("breakout game") {
     CHECK(!empty_invalid.has_value());
   }
 
-  SUBCASE("bounce destroys block") {
+  SUBCASE("block_bounce destroys block") {
     blocks_t blocks = create_blocks(breakout);
 
     const int block_x = blocks.col_count / 2;
@@ -573,7 +573,7 @@ TEST_CASE("breakout game") {
     ball_t ball;
     ball.position_ = block_position(blocks, block_x, block_y).value();
 
-    bounce(blocks, ball);
+    block_bounce(blocks, ball);
 
     CHECK(block_destroyed(blocks, block_x, block_y));
   }
@@ -583,7 +583,7 @@ TEST_CASE("breakout game") {
 
     ball_t ball;
     ball.position_ = block_position(blocks, 0, 0).value();
-    bounce(blocks, ball);
+    block_bounce(blocks, ball);
 
     CHECK(block_destroyed(blocks, 0, 0));
     CHECK(!intersects(blocks, ball));
