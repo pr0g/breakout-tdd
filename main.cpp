@@ -52,19 +52,40 @@ int main(int argc, char** argv) {
       std::string_view{"\xE2\x94\x83"}, std::string_view{"\xE2\x94\x8F"},
       std::string_view{"\xE2\x94\x93"}, std::string_view{"\xE2\x94\x97"},
       std::string_view{"\xE2\x94\x9b"});
-    breakout.display_paddle(display_console, std::string_view{"\xE2\x96\x91"});
-    breakout.display_blocks(display_console, std::string_view{"\xE2\x96\x92"});
-    breakout.display_ball(display_console, std::string_view{"\xE2\x98\xBB"});
 
-    mvprintw(
-      breakout.board_offset().y_ + 1,
-      breakout.board_offset().x_ + breakout.board_size().x_ + 5, "Lives: %d",
-      breakout.lives());
-
-    mvprintw(
-      breakout.board_offset().y_ + 3,
-      breakout.board_offset().x_ + breakout.board_size().x_ + 5, "Score: %d",
-      breakout.score());
+    switch (breakout.state()) {
+      case breakout_t::game_state_e::game_over: {
+        constexpr std::string_view game_over_msg = "Game Over";
+        mvprintw(
+          breakout.board_offset().y_ + breakout.board_size().y_ / 2,
+          breakout.board_offset().x_ + (breakout.board_size().x_ / 2)
+            - (game_over_msg.size() / 2),
+          "%.*s", int(game_over_msg.length()), game_over_msg.data());
+        const std::string final_score =
+          "Final Score: " + std::to_string(breakout.score());
+        mvprintw(
+          breakout.board_offset().y_ + breakout.board_size().y_ / 2 + 2,
+          breakout.board_offset().x_ + (breakout.board_size().x_ / 2)
+            - (final_score.size() / 2),
+          final_score.c_str());
+      } break;
+      default:
+        breakout.display_paddle(
+          display_console, std::string_view{"\xE2\x96\x91"});
+        breakout.display_blocks(
+          display_console, std::string_view{"\xE2\x96\x92"});
+        breakout.display_ball(
+          display_console, std::string_view{"\xE2\x98\xBB"});
+        mvprintw(
+          breakout.board_offset().y_ + 1,
+          breakout.board_offset().x_ + breakout.board_size().x_ + 5,
+          "Lives: %d", breakout.lives());
+        mvprintw(
+          breakout.board_offset().y_ + 3,
+          breakout.board_offset().x_ + breakout.board_size().x_ + 5,
+          "Score: %d", breakout.score());
+        break;
+    }
 
     using std::chrono_literals::operator""ms;
     std::this_thread::sleep_for(100ms);
