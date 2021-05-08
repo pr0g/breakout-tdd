@@ -508,4 +508,12 @@ TEST_CASE("breakout game") {
       == blocks.row_margin
            + ((blocks.row_count - 1) * (blocks.block_height + blocks.row_spacing)));
   }
+
+  SUBCASE("invalid block position returns empty") {
+    const blocks_t blocks = create_blocks(breakout);
+
+    const auto empty = block_position(blocks, 100, 100);
+
+    CHECK(!empty.has_value());
+  }
 }
