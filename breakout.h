@@ -74,7 +74,7 @@ void step(const paddle_t& paddle, ball_t& ball) {
   }
 }
 
-void check(const blocks_t& blocks, ball_t& ball) {
+void bounce(const blocks_t& blocks, ball_t& ball) {
   if (intersects(blocks, ball)) {
     ball.velocity_.second *= -1;
   }

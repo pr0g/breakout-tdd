@@ -440,7 +440,7 @@ TEST_CASE("breakout game") {
 
     ball.position_ = {block_x, block_y};
 
-    check(blocks, ball);
+    bounce(blocks, ball);
 
     CHECK(ball.velocity_.first == 1);
     CHECK(ball.velocity_.second == -1);
