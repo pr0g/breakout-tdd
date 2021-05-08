@@ -228,6 +228,7 @@ public:
         }
       } break;
       case game_state_e::lost_life: {
+        ball_.velocity_ = vec2{0, 0};
         ball_.position_ = vec2{paddle_.position_.x_, paddle_.position_.y_ - 1};
         state_ = game_state_e::preparing;
       } break;
