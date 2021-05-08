@@ -608,4 +608,20 @@ TEST_CASE("breakout game") {
       block_display_test.blocks_.front().begin_.x_
       == blocks.col_margin + blocks.block_width + blocks.col_spacing);
   }
+
+  SUBCASE("score increases after block is destroyed") {
+    bool hit_count = 0;
+    breakout.set_block_bounce_fn([&hit_count](blocks_t& blocks, ball_t& ball) {
+      if (::block_bounce(blocks, ball)) {
+        hit_count++;
+      }
+    });
+    while (true) {
+      breakout.step();
+      if (hit_count == 1) {
+        break;
+      }
+    }
+    CHECK(breakout.block_score() * hit_count == breakout.score());
+  }
 }
