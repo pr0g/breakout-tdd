@@ -6,13 +6,13 @@
 - ~~game border (outline)~~
 - ~~border margin/padding~~
 - ~~block display~~
-- block count (horizontal/vertical)
+- ~~ball paddle/block collision~~
 - ~~ball movement~~
 - ~~ball wall collision~~
+- ~~life count~~
+
+- block count (horizontal/vertical)
 - board updating (block state (destroyed or not))
 - remaining block count
-- ~~life count~~
 - level completion
 - game over state
-
-- ball paddle/block collision - how?
