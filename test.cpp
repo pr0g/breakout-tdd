@@ -346,6 +346,18 @@ TEST_CASE("breakout game") {
     CHECK(breakout.lives() == starting_lives - 1);
   }
 
+  SUBCASE("ball reset after losing life") {
+    breakout.launch_left();
+    while (true) {
+      breakout.step();
+      if (breakout.state() == breakout_t::game_state_e::lost_life) {
+        break;
+      }
+    }
+    CHECK(breakout.ball_position().x_ == breakout.paddle_position().x_);
+    CHECK(breakout.ball_position().y_ == breakout.paddle_position().y_ - 1);
+  }
+
   SUBCASE("miss ball, state returns to not launched") {
     const auto [board_x, board_y] = breakout.board_size();
     breakout.launch_left();
