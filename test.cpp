@@ -445,4 +445,15 @@ TEST_CASE("breakout game") {
     CHECK(ball.velocity_.first == 1);
     CHECK(ball.velocity_.second == -1);
   }
+
+  SUBCASE("bounce called in breakout step") {
+    bool called = false;
+    const auto bounce_fn = [&called](const blocks_t& blocks, ball_t ball) {
+      called = true;
+    };
+
+    breakout.set_bounce_fn(bounce_fn);
+
+    CHECK(called);
+  }
 }
