@@ -55,6 +55,11 @@ struct lookup_t {
   int row_;
 };
 
+struct vec2 {
+  int x_;
+  int y_;
+};
+
 bool block_destroyed(const blocks_t blocks, const int col, const int row) {
   return blocks.destroyed_[row * blocks.col_count + col];
 }
@@ -113,6 +118,20 @@ std::optional<std::pair<int, int>> block_position(
       + ((blocks.block_height + blocks.row_spacing) * row)};
 }
 
+void display_blocks(const blocks_t& blocks, vec2 offset, display_t& display) {
+  for (int row = 0; row < blocks.row_count; ++row) {
+    for (int col = 0; col < blocks.col_count; ++col) {
+      for (int block_part = 0; block_part < blocks.block_width; ++block_part) {
+        display.output(
+          offset.x_ + blocks.col_margin + block_part
+            + ((blocks.block_width + blocks.col_spacing) * col),
+          offset.y_ + blocks.row_margin
+            + ((blocks.block_height + blocks.row_spacing) * row));
+      }
+    }
+  }
+}
+
 class breakout_t;
 blocks_t create_blocks(const breakout_t& breakout);
 
@@ -130,6 +149,7 @@ public:
     state_ = game_state_e::preparing;
     lives_ = 3;
     bounce_fn_ = ::bounce;
+    blocks_ = create_blocks(*this);
   }
 
   using bounce_fn_t = std::function<void(blocks_t& blocks, ball_t& ball)>;
@@ -192,8 +212,7 @@ public:
   void step() {
     if (state_ == game_state_e::launched) {
       ::step(paddle_, ball_);
-      blocks_t blocks = create_blocks(*this);
-      bounce_fn_(blocks, ball_);
+      bounce_fn_(blocks_, ball_);
       if (
         ball_.position_.first >= board_size_.first - 1
         || ball_.position_.first <= 1) {
@@ -235,16 +254,7 @@ public:
 
   void display_blocks(display_t& display) {
     const auto [board_x, board_y] = board_offset();
-    for (int row = 0; row < block_rows(); ++row) {
-      for (int col = 0; col < block_cols(); ++col) {
-        for (int block_part = 0; block_part < block_width(); ++block_part) {
-          display.output(
-            board_x + col_margin() + block_part
-              + ((block_width() + col_spacing()) * col),
-            board_y + row_margin() + ((block_height() + row_spacing()) * row));
-        }
-      }
-    }
+    ::display_blocks(blocks_, vec2{board_x, board_y}, display);
   }
 
   void display_ball(display_t& display) {
@@ -261,6 +271,7 @@ private:
   int lives_;
   game_state_e state_;
   bounce_fn_t bounce_fn_;
+  blocks_t blocks_;
 
   void try_move_ball() {
     if (state_ != game_state_e::launched) {
