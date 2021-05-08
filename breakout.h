@@ -26,8 +26,8 @@ struct ball_t {
 };
 
 struct blocks_t {
-  int col_padding;
-  int row_padding;
+  int col_margin;
+  int row_margin;
   int col_spacing;
   int row_spacing;
   int col_count;
@@ -53,9 +53,9 @@ bool intersects(const blocks_t& blocks, const ball_t& ball) {
   for (int row = 0; row < blocks.row_count; row++) {
     for (int col = 0; col < blocks.col_count; col++) {
       const int block_x =
-        blocks.col_padding + ((blocks.block_width + blocks.col_spacing) * col);
+        blocks.col_margin + ((blocks.block_width + blocks.col_spacing) * col);
       const int block_y =
-        blocks.row_padding + ((blocks.block_height + blocks.row_spacing) * row);
+        blocks.row_margin + ((blocks.block_height + blocks.row_spacing) * row);
       if (
         ball.position_.first >= block_x
         && ball.position_.first <= block_x + blocks.block_width
@@ -83,9 +83,9 @@ void bounce(const blocks_t& blocks, ball_t& ball) {
 
 std::pair<int, int> block_position(const blocks_t& blocks, int col, int row) {
   return std::pair{
-    blocks.col_padding + ((blocks.block_width - 1) / 2)
+    blocks.col_margin + ((blocks.block_width - 1) / 2)
       + ((blocks.block_width + blocks.col_spacing) * col),
-    blocks.row_padding + ((blocks.block_height - 1) / 2)
+    blocks.row_margin + ((blocks.block_height - 1) / 2)
       + ((blocks.block_height + blocks.row_spacing) * row)};
 }
 
@@ -138,8 +138,8 @@ public:
   [[nodiscard]] int block_rows() const { return 9; }
   [[nodiscard]] int block_width() const { return 8; }
   [[nodiscard]] int block_height() const { return 1; }
-  [[nodiscard]] int row_padding() const { return 1; }
-  [[nodiscard]] int col_padding() const { return 2; }
+  [[nodiscard]] int row_margin() const { return 1; }
+  [[nodiscard]] int col_margin() const { return 2; }
   [[nodiscard]] int col_spacing() const { return 1; }
   [[nodiscard]] int row_spacing() const { return 1; }
 
@@ -222,9 +222,9 @@ public:
       for (int col = 0; col < block_cols(); ++col) {
         for (int block_part = 0; block_part < block_width(); ++block_part) {
           display.output(
-            board_x + col_padding() + block_part
+            board_x + col_margin() + block_part
               + ((block_width() + col_spacing()) * col),
-            board_y + row_padding() + ((block_height() + row_spacing()) * row));
+            board_y + row_margin() + ((block_height() + row_spacing()) * row));
         }
       }
     }
@@ -259,8 +259,8 @@ private:
 
 blocks_t create_blocks(const breakout_t& breakout) {
   blocks_t blocks;
-  blocks.col_padding = breakout.col_padding();
-  blocks.row_padding = breakout.row_padding();
+  blocks.col_margin = breakout.col_margin();
+  blocks.row_margin = breakout.row_margin();
   blocks.col_spacing = breakout.col_spacing();
   blocks.row_spacing = breakout.row_spacing();
   blocks.col_count = breakout.block_cols();

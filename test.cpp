@@ -191,29 +191,29 @@ TEST_CASE("breakout game") {
     CHECK(
       block_display_test.blocks_.front().begin_
       == std::pair{
-        board_x + breakout.col_padding(), board_y + breakout.row_padding()});
+        board_x + breakout.col_margin(), board_y + breakout.row_margin()});
     CHECK(
       block_display_test.blocks_.front().end_
       == std::pair{
-        board_x + breakout.col_padding() + breakout.block_width() - 1,
-        board_y + breakout.row_padding()});
+        board_x + breakout.col_margin() + breakout.block_width() - 1,
+        board_y + breakout.row_margin()});
     CHECK(
       block_display_test.blocks_.back().begin_
       == std::pair{
-        board_x + breakout.col_padding()
+        board_x + breakout.col_margin()
           + (breakout.block_cols() - 1)
               * (breakout.block_width() + breakout.col_spacing()),
-        board_y + breakout.row_padding()
+        board_y + breakout.row_margin()
           + (breakout.block_height() + breakout.row_spacing())
               * (breakout.block_rows() - 1)});
     CHECK(
       block_display_test.blocks_.back().end_
       == std::pair{
-        board_x + breakout.col_padding()
+        board_x + breakout.col_margin()
           + (breakout.block_cols() - 1)
               * (breakout.block_width() + breakout.col_spacing())
           + (breakout.block_width() - 1),
-        board_y + breakout.row_padding()
+        board_y + breakout.row_margin()
           + (breakout.block_height() + breakout.row_spacing())
               * (breakout.block_rows() - 1)});
   }
@@ -390,7 +390,7 @@ TEST_CASE("breakout game") {
 
     ball_t ball;
     // top left block
-    ball.position_ = {blocks.col_padding, blocks.row_padding};
+    ball.position_ = {blocks.col_margin, blocks.row_margin};
     CHECK(intersects(blocks, ball));
 
     // top left (board outline)
@@ -403,18 +403,18 @@ TEST_CASE("breakout game") {
 
     {
       const int block_x =
-        blocks.col_padding + ((blocks.block_width + blocks.col_spacing) * 1);
+        blocks.col_margin + ((blocks.block_width + blocks.col_spacing) * 1);
       const int block_y =
-        blocks.row_padding + ((blocks.block_height + blocks.row_spacing) * 2);
+        blocks.row_margin + ((blocks.block_height + blocks.row_spacing) * 2);
       ball.position_ = {block_x, block_y};
       CHECK(intersects(blocks, ball));
     }
 
     {
-      const int block_x = blocks.col_padding
+      const int block_x = blocks.col_margin
                         + ((blocks.block_width + blocks.col_spacing)
                            * (breakout.block_cols() - 1));
-      const int block_y = blocks.row_padding
+      const int block_y = blocks.row_margin
                         + ((blocks.block_height + blocks.row_spacing)
                            * (breakout.block_rows() - 1));
       ball.position_ = {block_x, block_y};
@@ -428,10 +428,10 @@ TEST_CASE("breakout game") {
     ball_t ball;
     ball.velocity_ = {1, 1};
 
-    const int block_x = blocks.col_padding
+    const int block_x = blocks.col_margin
                       + ((blocks.block_width + blocks.col_spacing)
                          * (breakout.block_cols() - 1));
-    const int block_y = blocks.row_padding
+    const int block_y = blocks.row_margin
                       + ((blocks.block_height + blocks.row_spacing)
                          * (breakout.block_rows() - 1));
 
@@ -490,22 +490,22 @@ TEST_CASE("breakout game") {
 
     CHECK(
       top_left_position.first
-      == blocks.col_padding + ((blocks.block_width - 1) / 2));
-    CHECK(top_left_position.second == blocks.row_padding);
+      == blocks.col_margin + ((blocks.block_width - 1) / 2));
+    CHECK(top_left_position.second == blocks.row_margin);
 
     CHECK(center_position.first == breakout.board_size().first / 2);
     CHECK(
       center_position.second
-      == blocks.row_padding
+      == blocks.row_margin
            + ((blocks.row_count / 2) * (blocks.block_height + blocks.row_spacing)));
 
     CHECK(
       bottom_right_position.first
-      == breakout.board_size().first - blocks.col_padding
+      == breakout.board_size().first - blocks.col_margin
            - (blocks.block_width / 2));
     CHECK(
       bottom_right_position.second
-      == blocks.row_padding
+      == blocks.row_margin
            + ((blocks.row_count - 1) * (blocks.block_height + blocks.row_spacing)));
   }
 }
