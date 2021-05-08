@@ -80,6 +80,9 @@ void check(const blocks_t& blocks, ball_t& ball) {
   }
 }
 
+class breakout_t;
+blocks_t create_blocks(const breakout_t& breakout);
+
 class breakout_t {
 public:
   enum class game_state_e { preparing, launched, lost_life };
