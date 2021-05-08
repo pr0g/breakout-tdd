@@ -124,6 +124,9 @@ std::optional<vec2> block_position(const blocks_t& blocks, int col, int row) {
 void display_blocks(const blocks_t& blocks, vec2 offset, display_t& display) {
   for (int row = 0; row < blocks.row_count; ++row) {
     for (int col = 0; col < blocks.col_count; ++col) {
+      if (block_destroyed(blocks, col, row)) {
+        continue;
+      }
       for (int block_part = 0; block_part < blocks.block_width; ++block_part) {
         display.output(
           offset.x_ + blocks.col_margin + block_part
