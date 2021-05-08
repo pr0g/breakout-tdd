@@ -237,8 +237,9 @@ public:
           ball_.velocity_.y_ *= -1;
         }
         if (ball_.position_.y_ >= board_size_.y_) {
-          state_ = game_state_e::lost_life;
           lives_--;
+          state_ =
+            lives_ == 0 ? game_state_e::game_over : game_state_e::lost_life;
         }
       } break;
       case game_state_e::lost_life: {
