@@ -9,17 +9,17 @@
 
 namespace doctest {
   template<>
-  struct StringMaker<std::pair<int, int>> {
-    static String convert(const std::pair<int, int>& value) {
+  struct StringMaker<vec2> {
+    static String convert(const vec2& value) {
       return String(
-        (std::to_string(value.first) + ", " + std::to_string(value.second))
+        (std::to_string(value.x_) + ", " + std::to_string(value.y_))
           .c_str());
     }
   };
 } // namespace doctest
 
 struct display_test_t : public display_t {
-  std::vector<std::pair<int, int>> positions_;
+  std::vector<vec2> positions_;
   void output(int x, int y) override { positions_.push_back({x, y}); }
 };
 
@@ -27,8 +27,8 @@ struct display_block_test_t : public display_t {
   display_block_test_t(int block_size) : block_size_(block_size) {}
   const int block_size_;
   struct block_t {
-    std::pair<int, int> begin_;
-    std::pair<int, int> end_;
+    vec2 begin_;
+    vec2 end_;
   };
   int counter = 0;
   block_t active_block_;
@@ -44,6 +44,25 @@ struct display_block_test_t : public display_t {
     }
   }
 };
+
+TEST_CASE("vec2") {
+  SUBCASE("equal") {
+    const auto lhs = vec2{2, 3};
+    const auto rhs = vec2{2, 3};
+    CHECK(lhs == rhs);
+  }
+  SUBCASE("not equal x") {
+    const auto lhs = vec2{1, 3};
+    const auto rhs = vec2{2, 3};
+    CHECK(!(lhs == rhs));
+  }
+
+  SUBCASE("not equal y") {
+    const auto lhs = vec2{2, 3};
+    const auto rhs = vec2{2, 4};
+    CHECK(!(lhs == rhs));
+  }
+}
 
 TEST_CASE("breakout game") {
   breakout_t breakout;
@@ -70,8 +89,8 @@ TEST_CASE("breakout game") {
     breakout.display_board(display_test);
 
     const int outline_character_count =
-      ((breakout.board_size().first + 1) * 2)
-      + ((breakout.board_size().second - 1) * 2);
+      ((breakout.board_size().x_ + 1) * 2)
+      + ((breakout.board_size().y_ - 1) * 2);
     CHECK(display_test.positions_.size() == outline_character_count);
 
     int x_max = 0;
@@ -79,17 +98,17 @@ TEST_CASE("breakout game") {
     int y_max = 0;
     int y_min = INT_MAX;
     for (const auto& position : display_test.positions_) {
-      x_max = std::max(position.first, x_max);
-      x_min = std::min(position.first, x_min);
-      y_max = std::max(position.second, y_max);
-      y_min = std::min(position.second, y_min);
+      x_max = std::max(position.x_, x_max);
+      x_min = std::min(position.x_, x_min);
+      y_max = std::max(position.y_, y_max);
+      y_min = std::min(position.y_, y_min);
     }
 
-    CHECK(x_min == breakout.board_offset().first);
-    CHECK(x_max == breakout.board_size().first + breakout.board_offset().first);
-    CHECK(y_min == breakout.board_offset().second);
+    CHECK(x_min == breakout.board_offset().x_);
+    CHECK(x_max == breakout.board_size().x_ + breakout.board_offset().x_);
+    CHECK(y_min == breakout.board_offset().y_);
     CHECK(
-      y_max == breakout.board_size().second + breakout.board_offset().second);
+      y_max == breakout.board_size().y_ + breakout.board_offset().y_);
   }
 
   SUBCASE("paddle begins centered (board space)") {
@@ -122,8 +141,8 @@ TEST_CASE("breakout game") {
 
     int offset = 0;
     for (const auto& position : display_test.positions_) {
-      CHECK(position.first == board_x + breakout.paddle_left_edge() + offset++);
-      CHECK(position.second == board_y + breakout.board_size().second - 1);
+      CHECK(position.x_ == board_x + breakout.paddle_left_edge() + offset++);
+      CHECK(position.y_ == board_y + breakout.board_size().y_ - 1);
     }
   }
 
@@ -155,7 +174,7 @@ TEST_CASE("breakout game") {
   SUBCASE("paddle cannot be moved passed right edge") {
     const auto start_paddle_right_x = breakout.paddle_right_edge();
     breakout.move_paddle_right(
-      breakout.board_size().first - start_paddle_right_x - 1);
+      breakout.board_size().x_ - start_paddle_right_x - 1);
     const auto before_paddle_right_x = breakout.paddle_right_edge();
     breakout.move_paddle_right(1);
     const auto after_paddle_right_x = breakout.paddle_right_edge();
@@ -164,7 +183,7 @@ TEST_CASE("breakout game") {
 
   SUBCASE("overshoot left/right is constrained") {
     breakout.move_paddle_right(1000);
-    CHECK(breakout.paddle_right_edge() == breakout.board_size().first - 1);
+    CHECK(breakout.paddle_right_edge() == breakout.board_size().x_ - 1);
     breakout.move_paddle_left(500);
     CHECK(breakout.paddle_left_edge() == 1);
   }
@@ -190,16 +209,16 @@ TEST_CASE("breakout game") {
       == breakout.block_cols() * breakout.block_rows());
     CHECK(
       block_display_test.blocks_.front().begin_
-      == std::pair{
+      == vec2{
         board_x + breakout.col_margin(), board_y + breakout.row_margin()});
     CHECK(
       block_display_test.blocks_.front().end_
-      == std::pair{
+      == vec2{
         board_x + breakout.col_margin() + breakout.block_width() - 1,
         board_y + breakout.row_margin()});
     CHECK(
       block_display_test.blocks_.back().begin_
-      == std::pair{
+      == vec2{
         board_x + breakout.col_margin()
           + (breakout.block_cols() - 1)
               * (breakout.block_width() + breakout.col_spacing()),
@@ -208,7 +227,7 @@ TEST_CASE("breakout game") {
               * (breakout.block_rows() - 1)});
     CHECK(
       block_display_test.blocks_.back().end_
-      == std::pair{
+      == vec2{
         board_x + breakout.col_margin()
           + (breakout.block_cols() - 1)
               * (breakout.block_width() + breakout.col_spacing())
@@ -231,11 +250,11 @@ TEST_CASE("breakout game") {
 
     CHECK(display_test.positions_.size() == 1);
     CHECK(
-      display_test.positions_.front().first
-      == breakout.board_offset().first + breakout.ball_position().first);
+      display_test.positions_.front().x_
+      == breakout.board_offset().x_ + breakout.ball_position().x_);
     CHECK(
-      display_test.positions_.front().second
-      == breakout.board_offset().second + breakout.ball_position().second);
+      display_test.positions_.front().y_
+      == breakout.board_offset().y_ + breakout.ball_position().y_);
   }
 
   SUBCASE("ball moves with paddle before launch") {
@@ -303,7 +322,7 @@ TEST_CASE("breakout game") {
   }
 
   SUBCASE("ball bounces off of top wall") {
-    const auto start_ball_y = breakout.ball_position().second;
+    const auto start_ball_y = breakout.ball_position().y_;
     breakout.launch_left();
     const auto [launch_x_vel, launch_y_vel] = breakout.ball_velocity();
     for (int i = 0; i < start_ball_y; ++i) {
@@ -380,9 +399,9 @@ TEST_CASE("breakout game") {
       step(paddle, ball);
     }
 
-    CHECK(ball.velocity_.second == -1);
-    CHECK(ball.position_.first == 55);
-    CHECK(ball.position_.second == 45);
+    CHECK(ball.velocity_.y_ == -1);
+    CHECK(ball.position_.x_ == 55);
+    CHECK(ball.position_.y_ == 45);
   }
 
   SUBCASE("ball intersects block") {
@@ -439,8 +458,8 @@ TEST_CASE("breakout game") {
 
     bounce(blocks, ball);
 
-    CHECK(ball.velocity_.first == 1);
-    CHECK(ball.velocity_.second == -1);
+    CHECK(ball.velocity_.x_ == 1);
+    CHECK(ball.velocity_.y_ == -1);
   }
 
   SUBCASE("bounce called in breakout step") {
@@ -491,22 +510,22 @@ TEST_CASE("breakout game") {
         .value();
 
     CHECK(
-      top_left_position.first
+      top_left_position.x_
       == blocks.col_margin + ((blocks.block_width - 1) / 2));
-    CHECK(top_left_position.second == blocks.row_margin);
+    CHECK(top_left_position.y_ == blocks.row_margin);
 
-    CHECK(center_position.first == breakout.board_size().first / 2);
+    CHECK(center_position.x_ == breakout.board_size().x_ / 2);
     CHECK(
-      center_position.second
+      center_position.y_
       == blocks.row_margin
            + ((blocks.row_count / 2) * (blocks.block_height + blocks.row_spacing)));
 
     CHECK(
-      bottom_right_position.first
-      == breakout.board_size().first - blocks.col_margin
+      bottom_right_position.x_
+      == breakout.board_size().x_ - blocks.col_margin
            - (blocks.block_width / 2));
     CHECK(
-      bottom_right_position.second
+      bottom_right_position.y_
       == blocks.row_margin
            + ((blocks.row_count - 1) * (blocks.block_height + blocks.row_spacing)));
   }

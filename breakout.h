@@ -4,6 +4,15 @@
 #include <optional>
 #include <utility>
 
+struct vec2 {
+  int x_;
+  int y_;
+};
+
+inline bool operator==(const vec2 lhs, const vec2 rhs) {
+  return lhs.x_ == rhs.x_ && lhs.y_ == rhs.y_;
+}
+
 struct display_t {
   virtual void output(int x, int y) = 0;
 
@@ -12,18 +21,18 @@ protected:
 };
 
 struct paddle_t {
-  std::pair<int, int> position_;
+  vec2 position_;
   int width_;
 
-  [[nodiscard]] int left_edge() const { return position_.first - width_ / 2; }
+  [[nodiscard]] int left_edge() const { return position_.x_ - width_ / 2; }
   [[nodiscard]] int right_edge() const {
-    return position_.first + (width_ / 2 - 1);
+    return position_.x_ + (width_ / 2 - 1);
   }
 };
 
 struct ball_t {
-  std::pair<int, int> position_;
-  std::pair<int, int> velocity_;
+  vec2 position_;
+  vec2 velocity_;
 };
 
 struct blocks_t {
@@ -41,10 +50,10 @@ struct blocks_t {
 
 bool intersects(const paddle_t& paddle, const ball_t& ball) {
   if (
-    ball.position_.first >= paddle.left_edge()
-    && ball.position_.first <= paddle.right_edge()
-    && ball.position_.second >= paddle.position_.second
-    && ball.position_.second <= paddle.position_.second) {
+    ball.position_.x_ >= paddle.left_edge()
+    && ball.position_.x_ <= paddle.right_edge()
+    && ball.position_.y_ >= paddle.position_.y_
+    && ball.position_.y_ <= paddle.position_.y_) {
     return true;
   }
   return false;
@@ -53,11 +62,6 @@ bool intersects(const paddle_t& paddle, const ball_t& ball) {
 struct lookup_t {
   int col_;
   int row_;
-};
-
-struct vec2 {
-  int x_;
-  int y_;
 };
 
 bool block_destroyed(const blocks_t blocks, const int col, const int row) {
@@ -79,9 +83,9 @@ std::optional<lookup_t> intersects(const blocks_t& blocks, const ball_t& ball) {
       const int block_y =
         blocks.row_margin + ((blocks.block_height + blocks.row_spacing) * row);
       if (
-        ball.position_.first >= block_x
-        && ball.position_.first <= block_x + blocks.block_width
-        && ball.position_.second == block_y) {
+        ball.position_.x_ >= block_x
+        && ball.position_.x_ <= block_x + blocks.block_width
+        && ball.position_.y_ == block_y) {
         return lookup_t{col, row};
       }
     }
@@ -90,28 +94,28 @@ std::optional<lookup_t> intersects(const blocks_t& blocks, const ball_t& ball) {
 }
 
 void step(const paddle_t& paddle, ball_t& ball) {
-  ball.position_.first += ball.velocity_.first;
-  ball.position_.second += ball.velocity_.second;
+  ball.position_.x_ += ball.velocity_.x_;
+  ball.position_.y_ += ball.velocity_.y_;
   if (intersects(paddle, ball)) {
-    ball.velocity_.second *= -1;
+    ball.velocity_.y_ *= -1;
   }
 }
 
 void bounce(blocks_t& blocks, ball_t& ball) {
   if (const auto block_col_row = intersects(blocks, ball)) {
-    ball.velocity_.second *= -1;
+    ball.velocity_.y_ *= -1;
     destroy_block(blocks, block_col_row->col_, block_col_row->row_);
   }
 }
 
-std::optional<std::pair<int, int>> block_position(
+std::optional<vec2> block_position(
   const blocks_t& blocks, int col, int row) {
   if (
     col < 0 || col >= blocks.col_count || row < 0 || row >= blocks.row_count) {
     return {};
   }
 
-  return std::pair{
+  return vec2{
     blocks.col_margin + ((blocks.block_width - 1) / 2)
       + ((blocks.block_width + blocks.col_spacing) * col),
     blocks.row_margin + ((blocks.block_height - 1) / 2)
@@ -144,7 +148,7 @@ public:
     board_offset_ = {x, y};
     paddle_.position_ = {width / 2, height - 1};
     paddle_.width_ = 10; // default size
-    ball_.position_ = {paddle_.position_.first, paddle_.position_.second - 1};
+    ball_.position_ = {paddle_.position_.x_, paddle_.position_.y_ - 1};
     ball_.velocity_ = {0, 0};
     state_ = game_state_e::preparing;
     lives_ = 3;
@@ -155,18 +159,18 @@ public:
   using bounce_fn_t = std::function<void(blocks_t& blocks, ball_t& ball)>;
   void set_bounce_fn(const bounce_fn_t& bounce_fn) { bounce_fn_ = bounce_fn; }
 
-  [[nodiscard]] std::pair<int, int> board_offset() const {
+  [[nodiscard]] vec2 board_offset() const {
     return board_offset_;
   }
-  [[nodiscard]] std::pair<int, int> board_size() const { return board_size_; }
-  [[nodiscard]] std::pair<int, int> paddle_position() const {
+  [[nodiscard]] vec2 board_size() const { return board_size_; }
+  [[nodiscard]] vec2 paddle_position() const {
     return paddle_.position_;
   }
   [[nodiscard]] int paddle_width() const { return paddle_.width_; }
-  [[nodiscard]] std::pair<int, int> ball_position() const {
+  [[nodiscard]] vec2 ball_position() const {
     return ball_.position_;
   }
-  [[nodiscard]] std::pair<int, int> ball_velocity() const {
+  [[nodiscard]] vec2 ball_velocity() const {
     return ball_.velocity_;
   }
 
@@ -195,16 +199,16 @@ public:
   void move_paddle_left(const int distance) {
     if (paddle_left_edge() > 1) {
       const int move = std::min(paddle_left_edge() - 1, distance);
-      paddle_.position_.first -= move;
+      paddle_.position_.x_ -= move;
     }
     try_move_ball();
   }
 
   void move_paddle_right(const int distance) {
-    if (paddle_right_edge() < board_size_.first) {
+    if (paddle_right_edge() < board_size_.x_) {
       const int move =
-        std::min(board_size_.first - paddle_right_edge() - 1, distance);
-      paddle_.position_.first += move;
+        std::min(board_size_.x_ - paddle_right_edge() - 1, distance);
+      paddle_.position_.x_ += move;
     }
     try_move_ball();
   }
@@ -214,14 +218,14 @@ public:
       ::step(paddle_, ball_);
       bounce_fn_(blocks_, ball_);
       if (
-        ball_.position_.first >= board_size_.first - 1
-        || ball_.position_.first <= 1) {
-        ball_.velocity_.first *= -1;
+        ball_.position_.x_ >= board_size_.x_ - 1
+        || ball_.position_.x_ <= 1) {
+        ball_.velocity_.x_ *= -1;
       }
-      if (ball_.position_.second <= 0) {
-        ball_.velocity_.second *= -1;
+      if (ball_.position_.y_ <= 0) {
+        ball_.velocity_.y_ *= -1;
       }
-      if (ball_.position_.second >= board_size_.second) {
+      if (ball_.position_.y_ >= board_size_.y_) {
         state_ = game_state_e::lost_life;
         lives_--;
       }
@@ -264,8 +268,8 @@ public:
   }
 
 private:
-  std::pair<int, int> board_size_;
-  std::pair<int, int> board_offset_;
+  vec2 board_size_;
+  vec2 board_offset_;
   paddle_t paddle_;
   ball_t ball_;
   int lives_;
@@ -275,11 +279,11 @@ private:
 
   void try_move_ball() {
     if (state_ != game_state_e::launched) {
-      ball_.position_.first = paddle_.position_.first;
+      ball_.position_.x_ = paddle_.position_.x_;
     }
   }
 
-  void launch(std::pair<int, int> velocity) {
+  void launch(vec2 velocity) {
     state_ = game_state_e::launched;
     ball_.velocity_ = velocity;
   }

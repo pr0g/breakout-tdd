@@ -51,8 +51,8 @@ int main(int argc, char** argv) {
     breakout.display_ball(display_console);
 
     mvprintw(
-      breakout.board_offset().second,
-      breakout.board_offset().first + breakout.board_size().first + 5,
+      breakout.board_offset().y_,
+      breakout.board_offset().x_ + breakout.board_size().x_ + 5,
       "Lives: %d", breakout.lives());
 
     using std::chrono_literals::operator""ms;
