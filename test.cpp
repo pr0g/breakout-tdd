@@ -173,9 +173,8 @@ TEST_CASE("breakout game") {
     display_test_t display_test;
     breakout.display_blocks(display_test);
 
-    const int output_count = breakout.block_cols()
-                           * breakout.block_rows()
-                           * breakout.block_width();
+    const int output_count =
+      breakout.block_cols() * breakout.block_rows() * breakout.block_width();
 
     CHECK(display_test.positions_.size() == output_count);
   }
@@ -192,8 +191,7 @@ TEST_CASE("breakout game") {
     CHECK(
       block_display_test.blocks_.front().begin_
       == std::pair{
-        board_x + breakout.col_padding(),
-        board_y + breakout.row_padding()});
+        board_x + breakout.col_padding(), board_y + breakout.row_padding()});
     CHECK(
       block_display_test.blocks_.front().end_
       == std::pair{
@@ -405,10 +403,9 @@ TEST_CASE("breakout game") {
 
     {
       const int block_x =
-        blocks.col_padding
-        + ((blocks.block_width + blocks.col_spacing) * 1);
-      const int block_y = blocks.row_padding
-                        + ((blocks.block_height + blocks.row_spacing) * 2);
+        blocks.col_padding + ((blocks.block_width + blocks.col_spacing) * 1);
+      const int block_y =
+        blocks.row_padding + ((blocks.block_height + blocks.row_spacing) * 2);
       ball.position_ = {block_x, block_y};
       CHECK(intersects(blocks, ball));
     }
@@ -480,5 +477,34 @@ TEST_CASE("breakout game") {
     CHECK(!block_destroyed(blocks, 6, 7));
     destroy_block(blocks, 6, 7);
     CHECK(block_destroyed(blocks, 6, 7));
+  }
+
+  SUBCASE("block position can be looked up") {
+    const blocks_t blocks = create_blocks(breakout);
+
+    const auto top_left_position = block_position(blocks, 0, 0);
+    const auto center_position =
+      block_position(blocks, blocks.col_count / 2, blocks.row_count / 2);
+    const auto bottom_right_position =
+      block_position(blocks, blocks.col_count - 1, blocks.row_count - 1);
+
+    CHECK(
+      top_left_position.first == blocks.col_padding + blocks.block_width / 2);
+    CHECK(top_left_position.second == blocks.row_padding);
+
+    CHECK(center_position.first == breakout.board_size().first / 2);
+    CHECK(
+      center_position.second
+      == blocks.row_padding
+           + ((blocks.row_count / 2) * blocks.block_height + blocks.row_spacing));
+
+    CHECK(
+      bottom_right_position.first
+      == breakout.board_size().first - blocks.col_padding
+           - (blocks.block_width / 2));
+    CHECK(
+      center_position.second
+      == blocks.row_padding
+           + (blocks.row_count * blocks.block_height + blocks.row_spacing));
   }
 }
