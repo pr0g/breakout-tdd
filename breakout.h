@@ -50,7 +50,12 @@ bool intersects(const paddle_t& paddle, const ball_t& ball) {
   return false;
 }
 
-bool intersects(const blocks_t& blocks, const ball_t& ball) {
+struct lookup_t {
+  int col_;
+  int row_;
+};
+
+std::optional<lookup_t> intersects(const blocks_t& blocks, const ball_t& ball) {
   for (int row = 0; row < blocks.row_count; row++) {
     for (int col = 0; col < blocks.col_count; col++) {
       const int block_x =
@@ -61,11 +66,19 @@ bool intersects(const blocks_t& blocks, const ball_t& ball) {
         ball.position_.first >= block_x
         && ball.position_.first <= block_x + blocks.block_width
         && ball.position_.second == block_y) {
-        return true;
+        return lookup_t{col, row};
       }
     }
   }
-  return false;
+  return {};
+}
+
+bool block_destroyed(const blocks_t blocks, const int col, const int row) {
+  return blocks.destroyed_[row * blocks.col_count + col];
+}
+
+void destroy_block(blocks_t& blocks, const int col, const int row) {
+  blocks.destroyed_[row * blocks.col_count + col] = true;
 }
 
 void step(const paddle_t& paddle, ball_t& ball) {
@@ -76,9 +89,10 @@ void step(const paddle_t& paddle, ball_t& ball) {
   }
 }
 
-void bounce(const blocks_t& blocks, ball_t& ball) {
-  if (intersects(blocks, ball)) {
+void bounce(blocks_t& blocks, ball_t& ball) {
+  if (const auto block_col_row = intersects(blocks, ball)) {
     ball.velocity_.second *= -1;
+    destroy_block(blocks, block_col_row->col_, block_col_row->row_);
   }
 }
 
@@ -99,14 +113,6 @@ std::optional<std::pair<int, int>> block_position(
 class breakout_t;
 blocks_t create_blocks(const breakout_t& breakout);
 
-bool block_destroyed(const blocks_t blocks, const int col, const int row) {
-  return blocks.destroyed_[row * blocks.col_count + col];
-}
-
-void destroy_block(blocks_t& blocks, const int col, const int row) {
-  blocks.destroyed_[row * blocks.col_count + col] = true;
-}
-
 class breakout_t {
 public:
   enum class game_state_e { preparing, launched, lost_life };
@@ -123,7 +129,7 @@ public:
     bounce_fn_ = ::bounce;
   }
 
-  using bounce_fn_t = std::function<void(const blocks_t& blocks, ball_t& ball)>;
+  using bounce_fn_t = std::function<void(blocks_t& blocks, ball_t& ball)>;
   void set_bounce_fn(const bounce_fn_t& bounce_fn) { bounce_fn_ = bounce_fn; }
 
   [[nodiscard]] std::pair<int, int> board_offset() const {
@@ -183,7 +189,8 @@ public:
   void step() {
     if (state_ == game_state_e::launched) {
       ::step(paddle_, ball_);
-      bounce_fn_(blocks_t{}, ball_);
+      blocks_t blocks = create_blocks(*this);
+      bounce_fn_(blocks, ball_);
       if (
         ball_.position_.first >= board_size_.first - 1
         || ball_.position_.first <= 1) {
