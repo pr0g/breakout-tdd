@@ -148,7 +148,7 @@ blocks_t create_blocks(const breakout_t& breakout);
 
 class breakout_t {
 public:
-  enum class game_state_e { preparing, launched, lost_life };
+  enum class game_state_e { preparing, launched, lost_life, game_over };
 
   void setup(int x, int y, int width, int height) {
     board_size_ = {width, height};
@@ -221,6 +221,8 @@ public:
     switch (state_) {
       case game_state_e::preparing:
         // noop
+        break;
+      case game_state_e::game_over:
         break;
       case game_state_e::launched: {
         ::step(paddle_, ball_);
