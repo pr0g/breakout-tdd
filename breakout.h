@@ -312,8 +312,10 @@ private:
   }
 
   void launch(vec2 velocity) {
-    state_ = game_state_e::launched;
-    ball_.velocity_ = velocity;
+    if (state_ == game_state_e::preparing) {
+      state_ = game_state_e::launched;
+      ball_.velocity_ = velocity;
+    }
   }
 };
 
