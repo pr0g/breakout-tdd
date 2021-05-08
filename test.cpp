@@ -458,4 +458,11 @@ TEST_CASE("breakout game") {
 
     CHECK(called);
   }
+
+  SUBCASE("a block can be destroyed") {
+    blocks_t blocks = create_blocks(breakout);
+    CHECK(!block_destroyed(blocks, 0, 1));
+    destroy_block(blocks, 0, 1);
+    CHECK(block_destroyed(blocks, 0, 1));
+  }
 }
