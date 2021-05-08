@@ -35,8 +35,14 @@ int main(int argc, char** argv) {
         breakout.move_paddle_right(2);
         break;
       case ' ': // space
-        breakout.launch_left();
-        break;
+        switch (breakout.state()) {
+          case breakout_t::game_state_e::game_over:
+            breakout.restart();
+            break;
+          default:
+            breakout.launch_left();
+            break;
+        }
       case ERR:
         // do nothing
         break;
