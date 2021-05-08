@@ -35,7 +35,7 @@ struct blocks_t {
   int block_height;
   int block_width;
 
-  bool destroyed_ = false;
+  std::deque<bool> destroyed_;
 };
 
 bool intersects(const paddle_t& paddle, const ball_t& ball) {
@@ -86,12 +86,12 @@ void bounce(const blocks_t& blocks, ball_t& ball) {
 class breakout_t;
 blocks_t create_blocks(const breakout_t& breakout);
 
-bool block_destroyed(const blocks_t blocks, int col, int row) {
-  return blocks.destroyed_;
+bool block_destroyed(const blocks_t blocks, const int col, const int row) {
+  return blocks.destroyed_[row * blocks.horizontal_count + col];
 }
 
-void destroy_block(blocks_t& blocks, int col, int row) {
-  blocks.destroyed_ = true;
+void destroy_block(blocks_t& blocks, const int col, const int row) {
+  blocks.destroyed_[row * blocks.horizontal_count + col] = true;
 }
 
 class breakout_t {
@@ -262,5 +262,7 @@ blocks_t create_blocks(const breakout_t& breakout) {
   blocks.vertical_count = breakout.blocks_vertical();
   blocks.block_height = breakout.block_height();
   blocks.block_width = breakout.block_width();
+  blocks.destroyed_ = std::deque<bool>(
+    breakout.blocks_horizontal() * breakout.blocks_vertical(), false);
   return blocks;
 }
