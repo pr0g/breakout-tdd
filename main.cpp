@@ -52,8 +52,8 @@ int main(int argc, char** argv) {
 
     mvprintw(
       breakout.board_offset().y_,
-      breakout.board_offset().x_ + breakout.board_size().x_ + 5,
-      "Lives: %d", breakout.lives());
+      breakout.board_offset().x_ + breakout.board_size().x_ + 5, "Lives: %d",
+      breakout.lives());
 
     using std::chrono_literals::operator""ms;
     std::this_thread::sleep_for(100ms);

@@ -108,8 +108,7 @@ void bounce(blocks_t& blocks, ball_t& ball) {
   }
 }
 
-std::optional<vec2> block_position(
-  const blocks_t& blocks, int col, int row) {
+std::optional<vec2> block_position(const blocks_t& blocks, int col, int row) {
   if (
     col < 0 || col >= blocks.col_count || row < 0 || row >= blocks.row_count) {
     return {};
@@ -159,20 +158,12 @@ public:
   using bounce_fn_t = std::function<void(blocks_t& blocks, ball_t& ball)>;
   void set_bounce_fn(const bounce_fn_t& bounce_fn) { bounce_fn_ = bounce_fn; }
 
-  [[nodiscard]] vec2 board_offset() const {
-    return board_offset_;
-  }
+  [[nodiscard]] vec2 board_offset() const { return board_offset_; }
   [[nodiscard]] vec2 board_size() const { return board_size_; }
-  [[nodiscard]] vec2 paddle_position() const {
-    return paddle_.position_;
-  }
+  [[nodiscard]] vec2 paddle_position() const { return paddle_.position_; }
   [[nodiscard]] int paddle_width() const { return paddle_.width_; }
-  [[nodiscard]] vec2 ball_position() const {
-    return ball_.position_;
-  }
-  [[nodiscard]] vec2 ball_velocity() const {
-    return ball_.velocity_;
-  }
+  [[nodiscard]] vec2 ball_position() const { return ball_.position_; }
+  [[nodiscard]] vec2 ball_velocity() const { return ball_.velocity_; }
 
   [[nodiscard]] int block_cols() const { return 11; }
   [[nodiscard]] int block_rows() const { return 9; }
@@ -217,9 +208,7 @@ public:
     if (state_ == game_state_e::launched) {
       ::step(paddle_, ball_);
       bounce_fn_(blocks_, ball_);
-      if (
-        ball_.position_.x_ >= board_size_.x_ - 1
-        || ball_.position_.x_ <= 1) {
+      if (ball_.position_.x_ >= board_size_.x_ - 1 || ball_.position_.x_ <= 1) {
         ball_.velocity_.x_ *= -1;
       }
       if (ball_.position_.y_ <= 0) {
