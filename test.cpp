@@ -528,11 +528,21 @@ TEST_CASE("breakout game") {
     const int block_y = blocks.row_count - 1;
 
     ball_t ball;
-    ball.velocity_ = {1, 1};
     ball.position_ = block_position(blocks, block_x, block_y).value();
 
     bounce(blocks, ball);
 
     CHECK(block_destroyed(blocks, block_x, block_y));
+  }
+
+  SUBCASE("ball cannot hit destroyed block") {
+    blocks_t blocks = create_blocks(breakout);
+
+    ball_t ball;
+    ball.position_ = block_position(blocks, 0, 0).value();
+    bounce(blocks, ball);
+
+    CHECK(block_destroyed(blocks, 0, 0));
+    CHECK(!intersects(blocks, ball));
   }
 }
