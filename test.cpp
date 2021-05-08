@@ -19,7 +19,9 @@ namespace doctest {
 
 struct display_test_t : public display_t {
   std::vector<vec2> positions_;
-  void output(int x, int y) override { positions_.push_back({x, y}); }
+  void output(int x, int y, std::string_view) override {
+    positions_.push_back({x, y});
+  }
 };
 
 struct display_block_test_t : public display_t {
@@ -32,7 +34,7 @@ struct display_block_test_t : public display_t {
   int counter = 0;
   block_t active_block_;
   std::vector<block_t> blocks_;
-  void output(int x, int y) override {
+  void output(int x, int y, std::string_view) override {
     if (counter++ == 0) {
       active_block_.begin_ = {x, y};
     }
@@ -85,7 +87,10 @@ TEST_CASE("breakout game") {
 
   SUBCASE("board outline displayed") {
     display_test_t display_test;
-    breakout.display_board(display_test);
+    breakout.display_board(
+      display_test, std::string_view{"*"}, std::string_view{"*"},
+      std::string_view{"*"}, std::string_view{"*"}, std::string_view{"*"},
+      std::string_view{"*"});
 
     const int outline_character_count = ((breakout.board_size().x_ + 1) * 2)
                                       + ((breakout.board_size().y_ - 1) * 2);
@@ -131,7 +136,7 @@ TEST_CASE("breakout game") {
 
   SUBCASE("board outline displayed") {
     display_test_t display_test;
-    breakout.display_paddle(display_test);
+    breakout.display_paddle(display_test, std::string_view{"*"});
 
     const auto [board_x, board_y] = breakout.board_offset();
     auto [paddle_x, paddle_y] = breakout.paddle_position();
@@ -187,7 +192,7 @@ TEST_CASE("breakout game") {
 
   SUBCASE("blocks are displayed") {
     display_test_t display_test;
-    breakout.display_blocks(display_test);
+    breakout.display_blocks(display_test, std::string_view{"*"});
 
     const int output_count =
       breakout.block_cols() * breakout.block_rows() * breakout.block_width();
@@ -197,7 +202,7 @@ TEST_CASE("breakout game") {
 
   SUBCASE("blocks are laid out correctly") {
     display_block_test_t block_display_test(breakout.block_width());
-    breakout.display_blocks(block_display_test);
+    breakout.display_blocks(block_display_test, std::string_view{"*"});
 
     const auto [board_x, board_y] = breakout.board_offset();
 
@@ -243,7 +248,7 @@ TEST_CASE("breakout game") {
 
   SUBCASE("ball displayed") {
     display_test_t display_test;
-    breakout.display_ball(display_test);
+    breakout.display_ball(display_test, std::string_view{"*"});
 
     CHECK(display_test.positions_.size() == 1);
     CHECK(
@@ -319,7 +324,7 @@ TEST_CASE("breakout game") {
   }
 
   SUBCASE("ball bounces off of top wall") {
-    breakout.set_block_bounce_fn([](blocks_t&, ball_t&){});
+    breakout.set_block_bounce_fn([](blocks_t&, ball_t&) {});
 
     const auto start_ball_y = breakout.ball_position().y_;
     breakout.launch_left();
@@ -595,7 +600,8 @@ TEST_CASE("breakout game") {
     destroy_block(blocks, 0, 0);
 
     display_block_test_t block_display_test(breakout.block_width());
-    display_blocks(blocks, vec2{0, 0}, block_display_test);
+    display_blocks(
+      blocks, vec2{0, 0}, block_display_test, std::string_view{"*"});
 
     // first block was not drawn
     CHECK(

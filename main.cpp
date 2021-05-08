@@ -6,7 +6,9 @@
 #include "breakout.h"
 
 struct display_console_t : public display_t {
-  void output(int x, int y) override { mvprintw(y, x, "*"); }
+  void output(int x, int y, std::string_view glyph) override {
+    mvprintw(y, x, "%.*s", int(glyph.length()), glyph.data());
+  }
 };
 
 int main(int argc, char** argv) {
@@ -45,13 +47,17 @@ int main(int argc, char** argv) {
     breakout.step();
 
     clear();
-    breakout.display_board(display_console);
-    breakout.display_paddle(display_console);
-    breakout.display_blocks(display_console);
-    breakout.display_ball(display_console);
+    breakout.display_board(
+      display_console, std::string_view{"\xE2\x94\x81"},
+      std::string_view{"\xE2\x94\x83"}, std::string_view{"\xE2\x94\x8F"},
+      std::string_view{"\xE2\x94\x93"}, std::string_view{"\xE2\x94\x97"},
+      std::string_view{"\xE2\x94\x9b"});
+    breakout.display_paddle(display_console, std::string_view{"\xE2\x96\x91"});
+    breakout.display_blocks(display_console, std::string_view{"\xE2\x96\x92"});
+    breakout.display_ball(display_console, std::string_view{"\xE2\x98\xBB"});
 
     mvprintw(
-      breakout.board_offset().y_,
+      breakout.board_offset().y_ + 1,
       breakout.board_offset().x_ + breakout.board_size().x_ + 5, "Lives: %d",
       breakout.lives());
 

@@ -2,7 +2,7 @@
 
 #include <deque>
 #include <optional>
-#include <utility>
+#include <string_view>
 
 struct vec2 {
   int x_;
@@ -14,7 +14,7 @@ inline bool operator==(const vec2 lhs, const vec2 rhs) {
 }
 
 struct display_t {
-  virtual void output(int x, int y) = 0;
+  virtual void output(int x, int y, std::string_view glyph) = 0;
 
 protected:
   ~display_t() = default;
@@ -121,7 +121,9 @@ std::optional<vec2> block_position(const blocks_t& blocks, int col, int row) {
       + ((blocks.block_height + blocks.row_spacing) * row)};
 }
 
-void display_blocks(const blocks_t& blocks, vec2 offset, display_t& display) {
+void display_blocks(
+  const blocks_t& blocks, vec2 offset, display_t& display,
+  std::string_view glyph) {
   for (int row = 0; row < blocks.row_count; ++row) {
     for (int col = 0; col < blocks.col_count; ++col) {
       if (block_destroyed(blocks, col, row)) {
@@ -132,7 +134,8 @@ void display_blocks(const blocks_t& blocks, vec2 offset, display_t& display) {
           offset.x_ + blocks.col_margin + block_part
             + ((blocks.block_width + blocks.col_spacing) * col),
           offset.y_ + blocks.row_margin
-            + ((blocks.block_height + blocks.row_spacing) * row));
+            + ((blocks.block_height + blocks.row_spacing) * row),
+          glyph);
       }
     }
   }
@@ -159,7 +162,9 @@ public:
   }
 
   using block_bounce_fn_t = std::function<void(blocks_t& blocks, ball_t& ball)>;
-  void set_block_bounce_fn(const block_bounce_fn_t& bounce_fn) { block_bounce_fn_ = bounce_fn; }
+  void set_block_bounce_fn(const block_bounce_fn_t& bounce_fn) {
+    block_bounce_fn_ = bounce_fn;
+  }
 
   [[nodiscard]] vec2 board_offset() const { return board_offset_; }
   [[nodiscard]] vec2 board_size() const { return board_size_; }
@@ -235,39 +240,48 @@ public:
     }
   }
 
-  void display_board(display_t& display) {
+  void display_board(
+    display_t& display, std::string_view horizontal_glyph,
+    std::string_view vertical_glyph, std::string_view top_left_glyph,
+    std::string_view top_right_glyph, std::string_view bottom_left_glyph,
+    std::string_view bottom_right_glyph) {
     const auto [board_width, board_height] = board_size_;
     const auto [board_x, board_y] = board_offset_;
-
-    for (int x = board_x; x <= board_x + board_width; x++) {
-      display.output(x, board_y);
-      display.output(x, board_y + board_height);
+    display.output(board_x, board_y, top_left_glyph);
+    display.output(board_x + board_width, board_y, top_right_glyph);
+    display.output(board_x, board_y + board_height, bottom_left_glyph);
+    display.output(
+      board_x + board_width, board_y + board_height, bottom_right_glyph);
+    for (int x = board_x + 1; x < board_x + board_width; x++) {
+      display.output(x, board_y, horizontal_glyph);
+      display.output(x, board_y + board_height, horizontal_glyph);
     }
     for (int y = board_y + 1; y <= board_y + board_height - 1; y++) {
-      display.output(board_x, y);
-      display.output(board_x + board_width, y);
+      display.output(board_x, y, vertical_glyph);
+      display.output(board_x + board_width, y, vertical_glyph);
     }
   }
 
-  void display_paddle(display_t& display) {
+  void display_paddle(display_t& display, std::string_view glyph) {
     const auto [board_x, board_y] = board_offset_;
     const auto [paddle_x, paddle_y] = paddle_position();
     const auto width = paddle_width();
 
     for (int i = 0; i < width; ++i) {
-      display.output(board_x + paddle_left_edge() + i, board_y + paddle_y);
+      display.output(
+        board_x + paddle_left_edge() + i, board_y + paddle_y, glyph);
     }
   }
 
-  void display_blocks(display_t& display) {
+  void display_blocks(display_t& display, std::string_view glyph) {
     const auto [board_x, board_y] = board_offset();
-    ::display_blocks(blocks_, vec2{board_x, board_y}, display);
+    ::display_blocks(blocks_, vec2{board_x, board_y}, display, glyph);
   }
 
-  void display_ball(display_t& display) {
+  void display_ball(display_t& display, std::string_view glyph) {
     const auto [x, y] = ball_.position_;
     const auto [board_x, board_y] = board_offset();
-    display.output(board_x + x, board_y + y);
+    display.output(board_x + x, board_y + y, glyph);
   }
 
 private:
