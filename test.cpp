@@ -324,7 +324,7 @@ TEST_CASE("breakout game") {
   }
 
   SUBCASE("ball bounces off of top wall") {
-    breakout.set_block_bounce_fn([](blocks_t&, ball_t&) {});
+    breakout.set_block_bounce_fn([](blocks_t&, ball_t&) { return false; });
 
     const auto start_ball_y = breakout.ball_position().y_;
     breakout.launch_left();
@@ -495,6 +495,7 @@ TEST_CASE("breakout game") {
     bool called = false;
     const auto bounce_fn = [&called](const blocks_t& blocks, ball_t ball) {
       called = true;
+      return false;
     };
 
     breakout.set_block_bounce_fn(bounce_fn);
@@ -610,12 +611,16 @@ TEST_CASE("breakout game") {
   }
 
   SUBCASE("score increases after block is destroyed") {
-    bool hit_count = 0;
+    int hit_count = 0;
     breakout.set_block_bounce_fn([&hit_count](blocks_t& blocks, ball_t& ball) {
       if (::block_bounce(blocks, ball)) {
         hit_count++;
+        return true;
       }
+      return false;
     });
+
+    breakout.launch_right();
     while (true) {
       breakout.step();
       if (hit_count == 1) {
