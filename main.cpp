@@ -27,10 +27,10 @@ int main(int argc, char** argv) {
   for (bool running = true; running;) {
     switch (int key = getch(); key) {
       case KEY_LEFT:
-        breakout.move_paddle_left(1);
+        breakout.move_paddle_left(2);
         break;
       case KEY_RIGHT:
-        breakout.move_paddle_right(1);
+        breakout.move_paddle_right(2);
         break;
       case ' ': // space
         breakout.launch_left();
