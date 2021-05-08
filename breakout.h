@@ -55,9 +55,20 @@ struct lookup_t {
   int row_;
 };
 
+bool block_destroyed(const blocks_t blocks, const int col, const int row) {
+  return blocks.destroyed_[row * blocks.col_count + col];
+}
+
+void destroy_block(blocks_t& blocks, const int col, const int row) {
+  blocks.destroyed_[row * blocks.col_count + col] = true;
+}
+
 std::optional<lookup_t> intersects(const blocks_t& blocks, const ball_t& ball) {
   for (int row = 0; row < blocks.row_count; row++) {
     for (int col = 0; col < blocks.col_count; col++) {
+      if (block_destroyed(blocks, col, row)) {
+        continue;
+      }
       const int block_x =
         blocks.col_margin + ((blocks.block_width + blocks.col_spacing) * col);
       const int block_y =
@@ -71,14 +82,6 @@ std::optional<lookup_t> intersects(const blocks_t& blocks, const ball_t& ball) {
     }
   }
   return {};
-}
-
-bool block_destroyed(const blocks_t blocks, const int col, const int row) {
-  return blocks.destroyed_[row * blocks.col_count + col];
-}
-
-void destroy_block(blocks_t& blocks, const int col, const int row) {
-  blocks.destroyed_[row * blocks.col_count + col] = true;
 }
 
 void step(const paddle_t& paddle, ball_t& ball) {
