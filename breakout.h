@@ -13,6 +13,11 @@ inline bool operator==(const vec2 lhs, const vec2 rhs) {
   return lhs.x_ == rhs.x_ && lhs.y_ == rhs.y_;
 }
 
+struct lookup_t {
+  int col_;
+  int row_;
+};
+
 struct display_t {
   virtual void output(int x, int y, std::string_view glyph) = 0;
 
@@ -59,12 +64,7 @@ bool intersects(const paddle_t& paddle, const ball_t& ball) {
   return false;
 }
 
-struct lookup_t {
-  int col_;
-  int row_;
-};
-
-bool block_destroyed(const blocks_t blocks, const int col, const int row) {
+bool block_destroyed(const blocks_t& blocks, const int col, const int row) {
   return blocks.destroyed_[row * blocks.col_count + col];
 }
 
