@@ -2,6 +2,7 @@
 
 #include <deque>
 #include <utility>
+#include <optional>
 
 struct display_t {
   virtual void output(int x, int y) = 0;
@@ -81,7 +82,7 @@ void bounce(const blocks_t& blocks, ball_t& ball) {
   }
 }
 
-std::pair<int, int> block_position(const blocks_t& blocks, int col, int row) {
+std::optional<std::pair<int, int>> block_position(const blocks_t& blocks, int col, int row) {
   return std::pair{
     blocks.col_margin + ((blocks.block_width - 1) / 2)
       + ((blocks.block_width + blocks.col_spacing) * col),

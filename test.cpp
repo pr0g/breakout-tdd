@@ -482,11 +482,13 @@ TEST_CASE("breakout game") {
   SUBCASE("block position can be looked up") {
     const blocks_t blocks = create_blocks(breakout);
 
-    const auto top_left_position = block_position(blocks, 0, 0);
+    const auto top_left_position = block_position(blocks, 0, 0).value();
     const auto center_position =
-      block_position(blocks, blocks.col_count / 2, blocks.row_count / 2);
+      block_position(blocks, blocks.col_count / 2, blocks.row_count / 2)
+        .value();
     const auto bottom_right_position =
-      block_position(blocks, blocks.col_count - 1, blocks.row_count - 1);
+      block_position(blocks, blocks.col_count - 1, blocks.row_count - 1)
+        .value();
 
     CHECK(
       top_left_position.first
