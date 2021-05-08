@@ -646,4 +646,11 @@ TEST_CASE("breakout game") {
 
     CHECK(breakout.state() == breakout_t::game_state_e::game_over);
   }
+
+  SUBCASE("cannot relaunch while ball is launched") {
+    breakout.launch_left();
+    breakout.step();
+    breakout.launch_right();
+    CHECK(breakout.ball_velocity().x_ == -1);
+  }
 }
