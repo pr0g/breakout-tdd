@@ -520,4 +520,19 @@ TEST_CASE("breakout game") {
     CHECK(!empty_large.has_value());
     CHECK(!empty_invalid.has_value());
   }
+
+  SUBCASE("bounce destroys block") {
+    blocks_t blocks = create_blocks(breakout);
+
+    const int block_x = blocks.col_count / 2;
+    const int block_y = blocks.row_count - 1;
+
+    ball_t ball;
+    ball.velocity_ = {1, 1};
+    ball.position_ = block_position(blocks, block_x, block_y).value();
+
+    bounce(blocks, ball);
+
+    CHECK(block_destroyed(blocks, block_x, block_y));
+  }
 }
