@@ -26,12 +26,12 @@ struct ball_t {
 };
 
 struct blocks_t {
-  int horizontal_padding;
-  int vertical_padding;
-  int horizontal_spacing;
-  int vertical_spacing;
-  int horizontal_count;
-  int vertical_count;
+  int col_padding;
+  int row_padding;
+  int col_spacing;
+  int row_spacing;
+  int col_count;
+  int row_count;
   int block_height;
   int block_width;
 
@@ -50,14 +50,14 @@ bool intersects(const paddle_t& paddle, const ball_t& ball) {
 }
 
 bool intersects(const blocks_t& blocks, const ball_t& ball) {
-  for (int row = 0; row < blocks.vertical_count; row++) {
-    for (int col = 0; col < blocks.horizontal_count; col++) {
+  for (int row = 0; row < blocks.row_count; row++) {
+    for (int col = 0; col < blocks.col_count; col++) {
       const int block_x =
-        blocks.horizontal_padding
-        + ((blocks.block_width + blocks.horizontal_spacing) * col);
+        blocks.col_padding
+        + ((blocks.block_width + blocks.col_spacing) * col);
       const int block_y =
-        blocks.vertical_padding
-        + ((blocks.block_height + blocks.vertical_spacing) * row);
+        blocks.row_padding
+        + ((blocks.block_height + blocks.row_spacing) * row);
       if (
         ball.position_.first >= block_x
         && ball.position_.first <= block_x + blocks.block_width
@@ -87,11 +87,11 @@ class breakout_t;
 blocks_t create_blocks(const breakout_t& breakout);
 
 bool block_destroyed(const blocks_t blocks, const int col, const int row) {
-  return blocks.destroyed_[row * blocks.horizontal_count + col];
+  return blocks.destroyed_[row * blocks.col_count + col];
 }
 
 void destroy_block(blocks_t& blocks, const int col, const int row) {
-  blocks.destroyed_[row * blocks.horizontal_count + col] = true;
+  blocks.destroyed_[row * blocks.col_count + col] = true;
 }
 
 class breakout_t {
@@ -128,14 +128,14 @@ public:
     return ball_.velocity_;
   }
 
-  [[nodiscard]] int blocks_horizontal() const { return 11; }
-  [[nodiscard]] int blocks_vertical() const { return 9; }
+  [[nodiscard]] int block_cols() const { return 11; }
+  [[nodiscard]] int block_rows() const { return 9; }
   [[nodiscard]] int block_width() const { return 8; }
   [[nodiscard]] int block_height() const { return 1; }
-  [[nodiscard]] int vertical_padding() const { return 1; }
-  [[nodiscard]] int horizontal_padding() const { return 2; }
-  [[nodiscard]] int horizontal_spacing() const { return 1; }
-  [[nodiscard]] int vertical_spacing() const { return 1; }
+  [[nodiscard]] int row_padding() const { return 1; }
+  [[nodiscard]] int col_padding() const { return 2; }
+  [[nodiscard]] int col_spacing() const { return 1; }
+  [[nodiscard]] int row_spacing() const { return 1; }
 
   [[nodiscard]] game_state_e state() const { return state_; }
   [[nodiscard]] bool launched() const {
@@ -212,14 +212,14 @@ public:
 
   void display_blocks(display_t& display) {
     const auto [board_x, board_y] = board_offset();
-    for (int row = 0; row < blocks_vertical(); ++row) {
-      for (int col = 0; col < blocks_horizontal(); ++col) {
+    for (int row = 0; row < block_rows(); ++row) {
+      for (int col = 0; col < block_cols(); ++col) {
         for (int block_part = 0; block_part < block_width(); ++block_part) {
           display.output(
-            board_x + horizontal_padding() + block_part
-              + ((block_width() + horizontal_spacing()) * col),
-            board_y + vertical_padding()
-              + ((block_height() + vertical_spacing()) * row));
+            board_x + col_padding() + block_part
+              + ((block_width() + col_spacing()) * col),
+            board_y + row_padding()
+              + ((block_height() + row_spacing()) * row));
         }
       }
     }
@@ -254,15 +254,15 @@ private:
 
 blocks_t create_blocks(const breakout_t& breakout) {
   blocks_t blocks;
-  blocks.horizontal_padding = breakout.horizontal_padding();
-  blocks.vertical_padding = breakout.vertical_padding();
-  blocks.horizontal_spacing = breakout.horizontal_spacing();
-  blocks.vertical_spacing = breakout.vertical_spacing();
-  blocks.horizontal_count = breakout.blocks_horizontal();
-  blocks.vertical_count = breakout.blocks_vertical();
+  blocks.col_padding = breakout.col_padding();
+  blocks.row_padding = breakout.row_padding();
+  blocks.col_spacing = breakout.col_spacing();
+  blocks.row_spacing = breakout.row_spacing();
+  blocks.col_count = breakout.block_cols();
+  blocks.row_count = breakout.block_rows();
   blocks.block_height = breakout.block_height();
   blocks.block_width = breakout.block_width();
   blocks.destroyed_ = std::deque<bool>(
-    breakout.blocks_horizontal() * breakout.blocks_vertical(), false);
+    breakout.block_cols() * breakout.block_rows(), false);
   return blocks;
 }

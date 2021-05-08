@@ -173,8 +173,8 @@ TEST_CASE("breakout game") {
     display_test_t display_test;
     breakout.display_blocks(display_test);
 
-    const int output_count = breakout.blocks_horizontal()
-                           * breakout.blocks_vertical()
+    const int output_count = breakout.block_cols()
+                           * breakout.block_rows()
                            * breakout.block_width();
 
     CHECK(display_test.positions_.size() == output_count);
@@ -188,36 +188,36 @@ TEST_CASE("breakout game") {
 
     CHECK(
       block_display_test.blocks_.size()
-      == breakout.blocks_horizontal() * breakout.blocks_vertical());
+      == breakout.block_cols() * breakout.block_rows());
     CHECK(
       block_display_test.blocks_.front().begin_
       == std::pair{
-        board_x + breakout.horizontal_padding(),
-        board_y + breakout.vertical_padding()});
+        board_x + breakout.col_padding(),
+        board_y + breakout.row_padding()});
     CHECK(
       block_display_test.blocks_.front().end_
       == std::pair{
-        board_x + breakout.horizontal_padding() + breakout.block_width() - 1,
-        board_y + breakout.vertical_padding()});
+        board_x + breakout.col_padding() + breakout.block_width() - 1,
+        board_y + breakout.row_padding()});
     CHECK(
       block_display_test.blocks_.back().begin_
       == std::pair{
-        board_x + breakout.horizontal_padding()
-          + (breakout.blocks_horizontal() - 1)
-              * (breakout.block_width() + breakout.horizontal_spacing()),
-        board_y + breakout.vertical_padding()
-          + (breakout.block_height() + breakout.vertical_spacing())
-              * (breakout.blocks_vertical() - 1)});
+        board_x + breakout.col_padding()
+          + (breakout.block_cols() - 1)
+              * (breakout.block_width() + breakout.col_spacing()),
+        board_y + breakout.row_padding()
+          + (breakout.block_height() + breakout.row_spacing())
+              * (breakout.block_rows() - 1)});
     CHECK(
       block_display_test.blocks_.back().end_
       == std::pair{
-        board_x + breakout.horizontal_padding()
-          + (breakout.blocks_horizontal() - 1)
-              * (breakout.block_width() + breakout.horizontal_spacing())
+        board_x + breakout.col_padding()
+          + (breakout.block_cols() - 1)
+              * (breakout.block_width() + breakout.col_spacing())
           + (breakout.block_width() - 1),
-        board_y + breakout.vertical_padding()
-          + (breakout.block_height() + breakout.vertical_spacing())
-              * (breakout.blocks_vertical() - 1)});
+        board_y + breakout.row_padding()
+          + (breakout.block_height() + breakout.row_spacing())
+              * (breakout.block_rows() - 1)});
   }
 
   SUBCASE("ball position begins above paddle") {
@@ -392,7 +392,7 @@ TEST_CASE("breakout game") {
 
     ball_t ball;
     // top left block
-    ball.position_ = {blocks.horizontal_padding, blocks.vertical_padding};
+    ball.position_ = {blocks.col_padding, blocks.row_padding};
     CHECK(intersects(blocks, ball));
 
     // top left (board outline)
@@ -405,21 +405,21 @@ TEST_CASE("breakout game") {
 
     {
       const int block_x =
-        blocks.horizontal_padding
-        + ((blocks.block_width + blocks.horizontal_spacing) * 1);
-      const int block_y = blocks.vertical_padding
-                        + ((blocks.block_height + blocks.vertical_spacing) * 2);
+        blocks.col_padding
+        + ((blocks.block_width + blocks.col_spacing) * 1);
+      const int block_y = blocks.row_padding
+                        + ((blocks.block_height + blocks.row_spacing) * 2);
       ball.position_ = {block_x, block_y};
       CHECK(intersects(blocks, ball));
     }
 
     {
-      const int block_x = blocks.horizontal_padding
-                        + ((blocks.block_width + blocks.horizontal_spacing)
-                           * (breakout.blocks_horizontal() - 1));
-      const int block_y = blocks.vertical_padding
-                        + ((blocks.block_height + blocks.vertical_spacing)
-                           * (breakout.blocks_vertical() - 1));
+      const int block_x = blocks.col_padding
+                        + ((blocks.block_width + blocks.col_spacing)
+                           * (breakout.block_cols() - 1));
+      const int block_y = blocks.row_padding
+                        + ((blocks.block_height + blocks.row_spacing)
+                           * (breakout.block_rows() - 1));
       ball.position_ = {block_x, block_y};
       CHECK(intersects(blocks, ball));
     }
@@ -431,12 +431,12 @@ TEST_CASE("breakout game") {
     ball_t ball;
     ball.velocity_ = {1, 1};
 
-    const int block_x = blocks.horizontal_padding
-                      + ((blocks.block_width + blocks.horizontal_spacing)
-                         * (breakout.blocks_horizontal() - 1));
-    const int block_y = blocks.vertical_padding
-                      + ((blocks.block_height + blocks.vertical_spacing)
-                         * (breakout.blocks_vertical() - 1));
+    const int block_x = blocks.col_padding
+                      + ((blocks.block_width + blocks.col_spacing)
+                         * (breakout.block_cols() - 1));
+    const int block_y = blocks.row_padding
+                      + ((blocks.block_height + blocks.row_spacing)
+                         * (breakout.block_rows() - 1));
 
     ball.position_ = {block_x, block_y};
 
