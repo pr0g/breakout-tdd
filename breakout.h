@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <deque>
 #include <optional>
 #include <string_view>
@@ -148,7 +149,13 @@ blocks_t create_blocks(const breakout_t& breakout);
 
 class breakout_t {
 public:
-  enum class game_state_e { preparing, launched, lost_life, game_over, game_complete };
+  enum class game_state_e {
+    preparing,
+    launched,
+    lost_life,
+    game_over,
+    game_complete
+  };
 
   void setup(int x, int y, int width, int height) {
     board_size_ = {width, height};
@@ -238,6 +245,11 @@ public:
         ::step(paddle_, ball_);
         if (block_bounce_fn_(blocks_, ball_)) {
           score_ += block_score();
+        }
+        if (std::all_of(
+              std::begin(blocks_.destroyed_), std::end(blocks_.destroyed_),
+              [](bool d) { return d; })) {
+          state_ = game_state_e::game_complete;
         }
         if (
           ball_.position_.x_ >= board_size_.x_ - 1 || ball_.position_.x_ <= 1) {
