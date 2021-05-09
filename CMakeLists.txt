@@ -13,7 +13,7 @@ find_package(Curses)
 add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME} PRIVATE main.cpp)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
-target_link_libraries(${PROJECT_NAME} PRIVATE Curses)
+target_link_libraries(${PROJECT_NAME} PRIVATE ncurses)
 
 add_executable(${PROJECT_NAME}-test)
 target_sources(${PROJECT_NAME}-test PRIVATE test.cpp)
