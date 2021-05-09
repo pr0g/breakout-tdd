@@ -672,4 +672,21 @@ TEST_CASE("breakout game") {
     CHECK(ball_x == paddle_x);
     CHECK(ball_y == paddle_y - 1);
   }
+
+  SUBCASE("all blocks destroyed wins game") {
+    const auto create_blocks_destroyed = [&breakout] {
+      auto blocks = ::create_blocks(breakout);
+      std::for_each(
+        std::begin(blocks.destroyed_), std::end(blocks.destroyed_),
+        [](auto& block) { block = false; });
+      return blocks;
+    };
+
+    breakout.set_create_blocks_fn(create_blocks);
+
+    breakout.restart();
+    breakout.step();
+
+    CHECK(breakout.state == breakout_t::game_state_e::game_complete);
+  }
 }
