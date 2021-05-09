@@ -10,9 +10,9 @@
 - ~~ball movement~~
 - ~~ball wall collision~~
 - ~~life count~~
+- ~~board updating (block state (destroyed or not))~~
+- ~~level completion~~
+- ~~game over state~~
 
 - block count (horizontal/vertical)
-- board updating (block state (destroyed or not))
 - remaining block count
-- level completion
-- game over state
