@@ -148,12 +148,13 @@ blocks_t create_blocks(const breakout_t& breakout);
 
 class breakout_t {
 public:
-  enum class game_state_e { preparing, launched, lost_life, game_over };
+  enum class game_state_e { preparing, launched, lost_life, game_over, game_complete };
 
   void setup(int x, int y, int width, int height) {
     board_size_ = {width, height};
     board_offset_ = {x, y};
     block_bounce_fn_ = ::block_bounce;
+    create_blocks_fn_ = ::create_blocks;
     restart();
   }
 
@@ -165,12 +166,17 @@ public:
     state_ = game_state_e::preparing;
     lives_ = starting_lives();
     score_ = 0;
-    blocks_ = create_blocks(*this);
+    blocks_ = create_blocks_fn_(*this);
   }
 
   using block_bounce_fn_t = std::function<bool(blocks_t& blocks, ball_t& ball)>;
   void set_block_bounce_fn(const block_bounce_fn_t& bounce_fn) {
     block_bounce_fn_ = bounce_fn;
+  }
+
+  using create_blocks_fn_t = std::function<blocks_t(const breakout_t&)>;
+  void set_create_blocks_fn(const create_blocks_fn_t& create_blocks_fn) {
+    create_blocks_fn_ = create_blocks_fn;
   }
 
   [[nodiscard]] vec2 board_offset() const { return board_offset_; }
@@ -225,9 +231,8 @@ public:
   void step() {
     switch (state_) {
       case game_state_e::preparing:
-        // noop
-        break;
       case game_state_e::game_over:
+      case game_state_e::game_complete:
         break;
       case game_state_e::launched: {
         ::step(paddle_, ball_);
@@ -308,6 +313,7 @@ private:
   int score_;
   game_state_e state_;
   block_bounce_fn_t block_bounce_fn_;
+  create_blocks_fn_t create_blocks_fn_;
   blocks_t blocks_;
 
   void try_move_ball() {

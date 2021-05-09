@@ -687,6 +687,6 @@ TEST_CASE("breakout game") {
     breakout.restart();
     breakout.step();
 
-    CHECK(breakout.state == breakout_t::game_state_e::game_complete);
+    CHECK(breakout.state() == breakout_t::game_state_e::game_complete);
   }
 }
