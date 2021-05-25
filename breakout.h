@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <deque>
+#include <functional>
 #include <optional>
 #include <string_view>
 

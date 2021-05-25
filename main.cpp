@@ -1,9 +1,34 @@
+#include "breakout.h"
+
 #include <chrono>
 #include <iostream>
-#include <ncurses.h>
 #include <thread>
 
-#include "breakout.h"
+#ifdef _WIN32
+#include "third-party/pdcurses/curses.h"
+static constexpr auto board_horizontal_glyph = std::string_view{"-"};
+static constexpr auto board_vertical_glyph = std::string_view{"|"};
+static constexpr auto board_top_left_glyph = std::string_view{"+"};
+static constexpr auto board_top_right_glyph = std::string_view{"+"};
+static constexpr auto board_bottom_left_glyph = std::string_view{"+"};
+static constexpr auto board_bottom_right_glyph = std::string_view{"+"};
+static constexpr auto paddle_glyph = std::string_view{"="};
+static constexpr auto block_glyph = std::string_view{"H"};
+static constexpr auto ball_glyph = std::string_view{"o"};
+#elif defined(__unix__) || defined(__APPLE__)
+#include <ncurses.h>
+static constexpr auto board_horizontal_glyph = std::string_view{"\xE2\x94\x81"};
+static constexpr auto board_vertical_glyph = std::string_view{"\xE2\x94\x83"};
+static constexpr auto board_top_left_glyph = std::string_view{"\xE2\x94\x8F"};
+static constexpr auto board_top_right_glyph = std::string_view{"\xE2\x94\x93"};
+static constexpr auto board_bottom_left_glyph =
+  std::string_view{"\xE2\x94\x97"};
+static constexpr auto board_bottom_right_glyph =
+  std::string_view{"\xE2\x94\x9b"};
+static constexpr auto paddle_glyph = std::string_view{"\xE2\x96\x91"};
+static constexpr auto block_glyph = std::string_view{"\xE2\x96\x92"};
+static constexpr auto ball_glyph = std::string_view{"\xE2\x98\xBB"};
+#endif
 
 struct display_console_t : public display_t {
   void output(int x, int y, std::string_view glyph) override {
@@ -54,10 +79,9 @@ int main(int argc, char** argv) {
 
     clear();
     breakout.display_board(
-      display_console, std::string_view{"\xE2\x94\x81"},
-      std::string_view{"\xE2\x94\x83"}, std::string_view{"\xE2\x94\x8F"},
-      std::string_view{"\xE2\x94\x93"}, std::string_view{"\xE2\x94\x97"},
-      std::string_view{"\xE2\x94\x9b"});
+      display_console, board_horizontal_glyph, board_vertical_glyph,
+      board_top_left_glyph, board_top_right_glyph, board_bottom_left_glyph,
+      board_bottom_right_glyph);
 
     const auto show_final_score = [&breakout] {
       const std::string final_score =
@@ -90,12 +114,9 @@ int main(int argc, char** argv) {
 
       } break;
       default:
-        breakout.display_paddle(
-          display_console, std::string_view{"\xE2\x96\x91"});
-        breakout.display_blocks(
-          display_console, std::string_view{"\xE2\x96\x92"});
-        breakout.display_ball(
-          display_console, std::string_view{"\xE2\x98\xBB"});
+        breakout.display_paddle(display_console, paddle_glyph);
+        breakout.display_blocks(display_console, block_glyph);
+        breakout.display_ball(display_console, ball_glyph);
         mvprintw(
           breakout.board_offset().y_ + 1,
           breakout.board_offset().x_ + breakout.board_size().x_ + 5,

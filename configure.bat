@@ -1,0 +1,3 @@
+@echo off
+
+cmake -B build -DWIL_BUILD_PACKAGING=OFF -DWIL_BUILD_TESTS=OFF
