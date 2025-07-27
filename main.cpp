@@ -3,6 +3,7 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
+#include <string>
 
 #ifdef _WIN32
 #include "third-party/pdcurses/curses.h"
