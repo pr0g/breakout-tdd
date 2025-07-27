@@ -5,7 +5,7 @@ include(FetchContent)
 FetchContent_Declare(
   doctest
   GIT_REPOSITORY https://github.com/onqtam/doctest.git
-  GIT_TAG 4d8716f1efc1d14aa736ef52ee727bd4204f4c40)
+  GIT_TAG 1da23a3e8119ec5cce4f9388e91b065e20bf06f5)
 FetchContent_MakeAvailable(doctest)
 
 find_package(Curses)
